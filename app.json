@@ -1,15 +1,29 @@
 {
   "expo": {
     "icon": "./assets/app-icon.png",
-    "name": "scanordo",
+    "name": "toutes mes ordonnances",
     "orientation": "portrait",
     "primaryColor": "#008857",
     "privacy": "unlisted",
-    "sdkVersion": "27.0.0",
-    "slug": "scanordo",
+    "sdkVersion": "28.0.0",
+    "slug": "toutes-mes-ordonnances",
     "version": "1.0.0",
     "splash": {
-      "image": "./assets/splash.png"
+      "image": "./assets/splash_screen.png",
+      "backgroundColor": "#45b471",
+      "resizeMode": "cover"
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "cyrille-duval",
+            "project": "toutes-mes-ordonnances",
+            "authToken": "d0f44458d32e4744b591d6291e6d8ffaf08d1b00494b48eeb87e8cf25e198c9c"
+          }
+        }
+      ]
     }
   }
 }

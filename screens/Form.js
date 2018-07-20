@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Button, ScrollView } from 'react-native';
-
+import { View, StyleSheet, Button, ScrollView, TextInput } from 'react-native';
+import { CheckBox, Input } from 'react-native-elements';
 import t from 'tcomb-form-native';
 
 const Form = t.form.Form;
@@ -93,6 +93,9 @@ const options = {
 };
 
 export default class Formu extends React.Component  {
+  state = {
+    text: '',
+  };
   handleSubmit = () => {
     const value = this._form.getValue();
     console.log('value: ', value);
@@ -102,6 +105,17 @@ export default class Formu extends React.Component  {
     return (
         <ScrollView>
             <View style={styles.container}>
+            <TextInput
+              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              onChangeText={(text) => this.setState({text})}
+              value={this.state.text}
+              placeholder="votre nom"
+            />
+
+            <CheckBox
+              title='Click Here'
+              checked={this.state.checked}
+            />
             <Form 
                 ref={c => this._form = c}
                 type={User} 

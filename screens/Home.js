@@ -3,6 +3,7 @@ import { Text, View, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Version can be specified in package.json
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
 import Formu from './Form';
+import LocationScreen from './Location';
 
 class HomeScreen extends React.Component {
   render() {
@@ -12,6 +13,10 @@ class HomeScreen extends React.Component {
         <Button
           title="Go to Home 1"
           onPress={() => this.props.navigation.navigate('Home1')}
+        />
+        <Button
+          title="Go to Location"
+          onPress={() => this.props.navigation.navigate('Location')}
         />
       </View>
     );
@@ -35,6 +40,7 @@ class Home1Screen extends React.Component {
 const HomeStack = createStackNavigator({
     Home: HomeScreen,
     Home1: Formu,
+    Location: LocationScreen,
   });
 
 class SettingsScreen extends React.Component {
