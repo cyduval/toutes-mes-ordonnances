@@ -6,6 +6,7 @@ import { colors } from '../../constants';
 import MyPharmaciesScreen from '../MyPharmacies';
 import MyPrescriptionsScreen from '../MyPrescriptions';
 import MyPillScreen from '../MyPill';
+import PreferencesScreen from '../Preferences';
 
 const styles = StyleSheet.create({
     icon: {
@@ -112,6 +113,9 @@ class HomeScreen extends React.Component {
     MyPill: {
         screen: MyPillScreen,
     },
+    Settings: {
+        screen: PreferencesScreen,
+    }, 
   }, {
     drawerPosition: 'right',
   });
