@@ -56,9 +56,9 @@ export default class App extends React.Component {
     console.log(this.state);
 
 
-    if (this.state.finish || this.state.onboarding) {
+    // if (this.state.finish || this.state.onboarding) {
       return (<Home />);
-    }
+    // }
 
     return (
     <Onboarding
