@@ -1,36 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Button } from 'react-native';
-import { createDrawerNavigator } from 'react-navigation';
-import { Button as ButtonElement, Header } from 'react-native-elements';
+import { View, SafeAreaView, Text } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import { colors } from '../../constants';
 
-const styles = StyleSheet.create({
-    icon: {
-      width: 24,
-      height: 24,
-    },
-  });
   
 class MyPillScreen extends React.Component {
     static navigationOptions = {
       drawerLabel: 'Mon pilulier',
       drawerIcon: ({ tintColor }) => (
-        <Image
-          source={require('../../assets/icons/chats-icon.png')}
-          style={[styles.icon, {tintColor: tintColor}]}
+        <Icon
+            name='pill'
+            type='material-community'
+            size={24}
         />
       ),
     };
   
     render() {
       return (
-        <View style={{ flex: 1,  flexDirection: 'column'}}>
+        <SafeAreaView style={{ flex: 1,  flexDirection: 'column', marginTop: 24 }}>
             <Header
-                leftComponent={{ icon: 'md-arrow-round-back', type: 'ionicon', color: '#fff', onPress: () => this.props.navigation.goBack() }}
+                leftComponent={{ size: 30, icon: 'md-arrow-round-back', type: 'ionicon', color: '#fff', onPress: () => this.props.navigation.navigate('Home')  }}
                 centerComponent={{ text: 'Mon pilulier', style: { color: '#fff' } }}
-                rightComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
+                rightComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
                 statusBarProps={{ barStyle: 'light-content' }}
-                outerContainerStyles={{  }}
+                outerContainerStyles={{ }}
                 innerContainerStyles={{  }}
                 backgroundColor={colors.main}
             />
@@ -40,7 +34,8 @@ class MyPillScreen extends React.Component {
                     Mon pilulier
                 </Text>
             </View>
-        </View>
+
+        </SafeAreaView>
       );
     }
   }

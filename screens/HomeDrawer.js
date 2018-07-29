@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Button } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import { createDrawerNavigator } from 'react-navigation';
-import { Button as ButtonElement, Header } from 'react-native-elements';
+import { Button as ButtonElement, Header, Icon } from 'react-native-elements';
 import { colors } from '../constants';
 import MyPharmaciesScreen from './MyPharmacies';
 import MyPrescriptionsScreen from './MyPrescriptions';
@@ -18,64 +18,81 @@ class MyHomeScreen extends React.Component {
     static navigationOptions = {
       drawerLabel: 'Home',
       drawerIcon: ({ tintColor }) => (
-        <Image
-          source={require('../assets/icons/chats-icon.png')}
-          style={[styles.icon, {tintColor: tintColor}]}
+        <Icon
+            name='home'
+            type='font-awesome'
+            size={24}
         />
       ),
     };
   
     render() {
       return (
-        <View style={{ flex: 1,  flexDirection: 'column'}}>
+        <SafeAreaView style={{ flex: 1,  flexDirection: 'column', marginTop: 24 }}>
             <Header
-                leftComponent={{ icon: 'home', color: '#fff' }}
+                leftComponent={{ size: 30, icon: 'home', color: '#fff' }}
                 centerComponent={{ text: 'Home', style: { color: '#fff' } }}
-                rightComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer() }}
+                rightComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
                 statusBarProps={{ barStyle: 'light-content' }}
                 outerContainerStyles={{  }}
-                innerContainerStyles={{  }}
+                innerContainerStyles={{ }}
                 backgroundColor={colors.main}
             />
 
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', padding: 20, width: '100%' }}>
 
                 <ButtonElement
                     raised
-                    backgroundColor={colors.main}
                     title='Mes pharmacies'
-                    containerViewStyle={{ width: '35%', height: '100%' }}
-                    buttonStyle={{  height: '100%' }}
-                    fontSize={16}
-                    textStyle={{ textAlign: 'center' }}
+                    buttonStyle={{
+                        backgroundColor: colors.main,
+                        borderColor: "transparent",
+                        borderWidth: 0,
+                        borderRadius: 5,
+                        padding: 5,
+                        height: '100%',
+                    }}
+                    titleProps={{ fontSize: 30 }}
+                    containerStyle={{ width: '35%', height: '100%' }}
                     onPress={() => this.props.navigation.navigate('MyPharmacies')}
                 />
 
                 <ButtonElement
                     raised
-                    backgroundColor={colors.main}
                     title='Envoyer mon ordonnance'
-                    containerViewStyle ={{ width: '35%', height: '100%' }}
-                    buttonStyle={{  height: '100%' }}
-                    fontSize={16}
-                    textStyle={{ textAlign: 'center' }}
+                    buttonStyle={{
+                        backgroundColor: colors.main,
+                        borderColor: "transparent",
+                        borderWidth: 0,
+                        borderRadius: 5,
+                        padding: 5,
+                        height: '100%',
+                    }}
+                    titleProps={{ fontSize: 30 }}
+                    containerStyle={{ width: '35%', height: '100%' }}
                     onPress={() => this.props.navigation.navigate('MyPrescriptions')}
                 />
 
             </View>
 
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                 <ButtonElement
                     raised
-                    backgroundColor={colors.main}
-                    icon={{name: 'pill', type: 'material-community', size: 24}}
+                    icon={{name: 'pill', type: 'material-community', size: 30, color: colors.white}}
                     title='Mon pilulier'
-                    containerViewStyle ={{ width: '80%' }}
-                    fontSize={24}
+                    buttonStyle={{
+                        backgroundColor: colors.main,
+                        borderColor: "transparent",
+                        borderWidth: 0,
+                        borderRadius: 5,
+                        padding: 5,
+                    }}
+                    titleProps={{ fontSize: 30 }}
+                    containerStyle={{ width: '80%' }}
                     onPress={() => this.props.navigation.navigate('MyPill')}
                 />
             </View>
-        </View>
+        </SafeAreaView>
       );
     }
   }
