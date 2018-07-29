@@ -5,7 +5,7 @@ import Welcome  from './screens/Welcome';
 import { NetInfo, Image, AsyncStorage } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import Home from './screens/Home';
-
+import HomeDrawer from './screens/HomeDrawer';
 
 
 
@@ -55,6 +55,7 @@ export default class App extends React.Component {
     console.log(111);
     console.log(this.state);
 
+    return (<HomeDrawer />);
 
     // if (this.state.finish || this.state.onboarding) {
       return (<Home />);
