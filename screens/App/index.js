@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { NetInfo, Image, AsyncStorage } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import Home from '../Home';
-// import HomeDrawer from '../HomeDrawer';
+import Auth from '../Auth';
 import NoNetwork from '../NoNetwork';
 
 class AppScreen extends React.Component {
@@ -49,9 +49,17 @@ class AppScreen extends React.Component {
     }
   
     render() {
-      const { global } = this.props;
+      const { auth, global } = this.props;
 
-      if (global.get('isNetwork') === 'none' || global.get('isNetwork') === 'unknown' || global.get('isNetwork') === 'undefined') {
+      console.log(112233);
+      console.log(global);
+      console.log(global.isNetwork);
+      console.log(auth);
+      if(auth.loginStatus !== 'logged') {
+        return (<Auth />);
+      }
+
+      if (global.isNetwork === 'none' || global.isNetwork === 'unknown' || global.isNetwork === 'undefined') {
         return (<NoNetwork />);
       }
   

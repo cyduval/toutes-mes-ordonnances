@@ -115,7 +115,7 @@ class HomeScreen extends React.Component {
     },
     Settings: {
         screen: PreferencesScreen,
-    }, 
+    },     
   }, {
     drawerPosition: 'right',
   });

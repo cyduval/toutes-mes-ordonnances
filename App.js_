@@ -1,0 +1,99 @@
+import Expo from 'expo';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import firebase from 'firebase';
+import reducers from './reducers';
+
+import { View, Platform, StatusBar } from 'react-native';
+import { TabNavigator, StackNavigator } from 'react-navigation';
+import { firebaseConfig } from './config/auth';
+import NavigatorService from './utils/navigator';
+
+import WelcomeScreen from './screens/Auth/Welcome';
+import RegisterScreen from './screens/Auth/Register';
+import LoginScreen from './screens/Auth/Login';
+import ProfileScreen from './screens/Auth/Profile';
+import ResetScreen from './screens/Auth/Reset';
+import Settings_Screen from './screens/Auth/Settings';
+
+
+export default class App extends React.Component {
+
+  //state = { loggedIn: true };
+
+  constructor(props) {
+    super(props);
+    this.store = createStore(reducers, {});
+  }
+
+  componentWillMount() {
+    console.log(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  render() {
+    const MainNavigator = TabNavigator({
+      menu_scr: { screen: Menu_Screen },
+      orders_screen: { screen: Orders_Screen },
+      settings_screen: { screen: Settings_Screen },
+    },
+    {
+      navigationOptions: {
+        headerLeft: null,
+        headerStyle: {
+           backgroundColor: 'white',
+           elevation: 2,
+           paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight + 10
+         },
+         headerTitleStyle: {
+           fontSize: 16,
+           alignSelf:'center',
+           marginBottom: Platform.OS === 'ios' ? 0 : 10,
+           marginTop: Platform.OS === 'ios' ? 25: 0
+         }
+      },
+      tabBarOptions: {
+        showLabel: false,
+        showIcon: true,
+        indicatorStyle: { backgroundColor: '#ffffff' },
+        style: { backgroundColor: '#ffffff' },
+      },
+      cardStyle: {
+        paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight
+      },
+      swipeEnabled: false,
+      tabBarPosition: 'bottom',
+    })
+
+//       loading_scr: { screen: Loading_Screen },
+
+    const LoginNavigator = StackNavigator({
+      welcome_screen: { screen: WelcomeScreen },
+      register_screen: { screen: RegisterScreen },
+      reset_screen: { screen: ResetScreen },
+      profile_screen: { screen: ProfileScreen },
+      login_screen: { screen: LoginScreen},
+      // main_screen: { screen: MainNavigator}
+      },
+      {
+        navigationOptions: {
+          tabBarVisible: false
+        },
+        swipeEnabled: false,
+        lazy: true
+      });
+
+      return (
+        <Provider store={this.store}>
+          <View style={styles.container}>
+            <LoginNavigator
+            ref={navigatorRef => {
+              NavigatorService.setContainer(navigatorRef);
+            }}/>
+          </View>
+        </Provider>
+      );
+  }
+}
+
