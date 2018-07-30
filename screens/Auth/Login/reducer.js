@@ -9,6 +9,7 @@ import {
 
 
 const INITIAL_STATE = {
+  firebaseLoaded: false,
   email: '',
   emailReset: '',
   password: '',
@@ -42,7 +43,7 @@ function appReducer(state = INITIAL_STATE, action) {
       return { loginStatus: 'initial', ...RESET_STATE };
     }
     case LOGIN_SUCCESS: {
-      return { ...state, email: action.payload.user.email, user: action.payload.user, loginStatus: 'logged', email: '', password: ''};
+      return { ...state, firebaseLoaded: true, email: action.payload.user.email, user: action.payload.user, loginStatus: 'logged', email: '', password: ''};
     }
     case RESET_FAILURE:
     case SIGNUP_FAILURE:

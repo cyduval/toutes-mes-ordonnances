@@ -9,6 +9,7 @@ import Home from '../Home';
 import Auth from '../Auth';
 import NoNetwork from '../NoNetwork';
 import { loginSuccess } from '../Auth/Login/actions';
+import Loading from '../../components/Loading';
 
 class AppScreen extends React.Component {
 
@@ -30,6 +31,11 @@ class AppScreen extends React.Component {
         console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
       });
       this._getData();
+    }
+
+    componentDidMount() {
+      const user = firebase.auth().currentUser;
+      // alert(user);
     }
   
     _storeData = async () => {
@@ -54,27 +60,20 @@ class AppScreen extends React.Component {
       const { auth, global } = this.props;
 
       console.log(112233);
-      console.log(global);
-      console.log(global.isNetwork);
       console.log(auth);
-      const user = firebase.auth().currentUser;
-      if(!user) {
-      // if(auth.loginStatus !== 'logged') {
-        return (<Auth />);
-      } else {
-        console.log(66);
-        console.log(auth.user);
-        if(!auth.user) {
-          console.log(77);
-          console.log(user);
-          this.props.onLoginUserSuccess({user});
-        }
-      }
 
       if (global.isNetwork === 'none' || global.isNetwork === 'unknown' || global.isNetwork === 'undefined') {
         return (<NoNetwork />);
       }
+
+      if(!auth.user) {
+        return (<Auth />);
+      }
   
+      if(!auth.firebaseLoaded) {
+        return (<Loading />);
+      }
+      
       return (<Home />);
   
       // if (this.state.finish || this.state.onboarding) {

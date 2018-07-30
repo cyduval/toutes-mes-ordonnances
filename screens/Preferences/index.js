@@ -82,12 +82,12 @@ class PreferencesScreen extends React.Component {
                 
                     <View style={{height: 60, marginHorizontal: 20, marginTop: 10, backgroundColor: 'white', borderRadius: 5, alignItems: 'center', flexDirection: 'row'}}>
                         <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
-                            <Text style={{fontFamily: 'regular', fontSize: 15, marginLeft: 10, color: 'gray'}}>
+                            <Text style={{fontSize: 15, marginLeft: 10, color: 'gray'}}>
                                 email
                             </Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', marginRight: 10 }}>
-                            <Text style={{fontFamily: 'regular', fontSize: 15, marginLeft: 10, color: 'gray'}}>
+                            <Text style={{fontSize: 15, marginLeft: 10, color: 'gray'}}>
                                 {auth.user.email}
                             </Text>
                         </View>

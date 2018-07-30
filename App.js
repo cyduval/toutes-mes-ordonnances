@@ -5,8 +5,12 @@ import { NetInfo } from 'react-native';
 import { PersistGate } from 'redux-persist/integration/react'
 import configureStore from './configureStore';
 import { onStatusChange  } from './screens/App/actions';
+import { loginSuccess  } from './screens/Auth/Login/actions';
+
 import ConnectedAppScreen from './screens/App';
 import { firebaseConfig } from './config/auth';
+
+// import '../lib/global.js';
 
 // import createReducer from './reducers';
 // const store = createStore(createReducer(), {});
@@ -26,17 +30,14 @@ NetInfo.addEventListener(
 );
 
 firebase.initializeApp(firebaseConfig);
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     console.log(' SIGNED !');
-    console.log(store.getState());
-    // this.state.isAuth = true;
-    const user = firebase.auth().currentUser;
     console.log(user);
+    store.dispatch(loginSuccess({user}));
   } else {
     console.log(' NOT SIGNED !');
-    console.log(store.getState());
-    // this.state.isAuth = false;
   }
 });
 export default class RootComponent extends React.Component {
