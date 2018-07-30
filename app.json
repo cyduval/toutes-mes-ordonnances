@@ -13,6 +13,12 @@
       "backgroundColor": "#45b471",
       "resizeMode": "cover"
     },
+    "ios": {
+      "bundleIdentifier": "com.toutesmesordonnances.app"
+    },
+    "android": {
+      "package": "com.toutesmesordonnances.app"
+    },
     "hooks": {
       "postPublish": [
         {
@@ -25,11 +31,5 @@
         }
       ]
     }
-  },
-  "ios": {
-    "bundleIdentifier": "com.toutes-mes-ordonnances.app"
-  },
-  "android": {
-    "package": "com.toutes-mes-ordonnances.app"
   }
 }

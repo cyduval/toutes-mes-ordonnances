@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import Sentry from 'sentry-expo';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -7,6 +8,7 @@ import Onboarding from 'react-native-onboarding-swiper';
 import Home from '../Home';
 import Auth from '../Auth';
 import NoNetwork from '../NoNetwork';
+import { loginSuccess } from '../Auth/Login/actions';
 
 class AppScreen extends React.Component {
 
@@ -55,8 +57,18 @@ class AppScreen extends React.Component {
       console.log(global);
       console.log(global.isNetwork);
       console.log(auth);
-      if(auth.loginStatus !== 'logged') {
+      const user = firebase.auth().currentUser;
+      if(!user) {
+      // if(auth.loginStatus !== 'logged') {
         return (<Auth />);
+      } else {
+        console.log(66);
+        console.log(auth.user);
+        if(!auth.user) {
+          console.log(77);
+          console.log(user);
+          this.props.onLoginUserSuccess({user});
+        }
       }
 
       if (global.isNetwork === 'none' || global.isNetwork === 'unknown' || global.isNetwork === 'undefined') {
@@ -98,9 +110,15 @@ const mapStateToProps = state => {
   return { ...state };
 };
 
+function mapDispatchToProps(dispatch) {
+  return {
+    onLoginUserSuccess: data => dispatch(loginSuccess(data)),
+  };
+}
+
 const withConnect = connect(
     mapStateToProps,
-    false,
+    mapDispatchToProps,
   );
 
 export default compose(
