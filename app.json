@@ -25,5 +25,11 @@
         }
       ]
     }
+  },
+  "ios": {
+    "bundleIdentifier": "com.toutes-mes-ordonnances.app"
+  },
+  "android": {
+    "package": "com.toutes-mes-ordonnances.app"
   }
 }
