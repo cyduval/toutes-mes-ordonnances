@@ -1,8 +1,9 @@
 import React from 'react';
 import firebase from 'firebase';
+import "babel-polyfill";
 import { Provider } from 'react-redux';
 import { NetInfo } from 'react-native';
-import { PersistGate } from 'redux-persist/integration/react'
+// import { PersistGate } from 'redux-persist/integration/react'
 import configureStore from './configureStore';
 import { onStatusChange  } from './screens/App/actions';
 import { loginSuccess  } from './screens/Auth/Login/actions';

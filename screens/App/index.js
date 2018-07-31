@@ -43,9 +43,11 @@ class AppScreen extends React.Component {
 
   _getData = async () => {
     const value = await AsyncStorage.getItem('onboarding');
-    this.setState({
-      onboarding: value
-    });
+    if (value && value === 'yes') {
+      this.setState({
+        onboarding: value
+      });
+    }
   }
 
   onboardingFinish = () => {
@@ -61,25 +63,29 @@ class AppScreen extends React.Component {
       global
     } = this.props;
 
-    if (global.isNetwork === 'none' || global.isNetwork === 'unknown' || global.isNetwork === 'undefined') {
-      return ( < NoNetwork / > );
+    if (!global || !auth) {
+      return false;
     }
+
+    if (global.isNetwork === 'none' || global.isNetwork === 'unknown' || global.isNetwork === 'undefined') {
+      return ( <NoNetwork /> );
+    }
+    console.log(111);
 
     if (!auth.user) {
-      return ( < Auth / > );
+      return ( <Auth /> );
     }
-
+    console.log(222);
     if (!auth.firebaseLoaded) {
-      return ( < Loading / > );
+      return ( <Loading /> );
     }
-
+    console.log(333);
     console.log('onboarding => ', this.state.onboarding);
     if (this.state.onboarding !== 'yes') {
-      return ( < Onboarding onboardingFinish={this.onboardingFinish} / > );
+      return ( <Onboarding onboardingFinish={this.onboardingFinish} /> );
     }
-
-    return ( < Home / > );
-
+    console.log(444);
+    return ( <Home /> );
   }
 }
 
