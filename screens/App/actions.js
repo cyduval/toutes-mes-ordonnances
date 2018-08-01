@@ -1,9 +1,3 @@
-/*
- *
- * App actions
- *
- */
-
 import {
     STATUS_CHANGE,
   } from './constants';

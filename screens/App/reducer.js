@@ -1,18 +1,16 @@
-import { fromJS } from 'immutable';
-
 import {
   STATUS_CHANGE,
 } from './constants';
 
-const initialState = fromJS({
+const initialState = {
   loading: false,
   isNetwork: 'none',
-});
+};
 
 function appReducer(state = initialState, action) {
   switch (action.type) {
     case STATUS_CHANGE: {
-      return state.set('isNetwork', action.payload);
+      return { isNetwork: action.payload };
     }
     default:
       return state;
