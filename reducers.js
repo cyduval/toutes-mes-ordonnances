@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import globalReducer from './screens/App/reducer';
-import authReducer from './screens/Auth/Login/reducer';
+import appReducer from './app/screens/App/reducer';
+import authReducer from './app/screens/Auth/reducer';
 
 export default function createReducer(injectedReducers) {
     return combineReducers({
-      global: globalReducer,
+      app: appReducer,
       auth: authReducer,
       ...injectedReducers,
     });

@@ -1,34 +1,15 @@
 import React from 'react';
-import firebase from 'firebase';
 import "babel-polyfill";
 import { Provider } from 'react-redux';
-import { NetInfo } from 'react-native';
-// import { PersistGate } from 'redux-persist/integration/react'
 import configureStore from './configureStore';
-import { onStatusChange  } from './screens/App/actions';
-import { loginSuccess  } from './screens/Auth/Login/actions';
+import App from 'app/screens/App';
 
-import ConnectedAppScreen from './screens/App';
-import { firebaseConfig } from './config/auth';
+import firebase from 'firebase';
+import { firebaseConfig } from 'toutesmesordonnances/config/auth';
+import { loginSuccess  } from 'app/screens/Auth/actions';
 
-// import '../lib/global.js';
-
-// import createReducer from './reducers';
-// const store = createStore(createReducer(), {});
 const initialState = {};
-// const { store, persistor } = configureStore(initialState);
 const store  = configureStore(initialState);
-
-NetInfo.getConnectionInfo().then((connectionInfo) => {
-  store.dispatch(onStatusChange(connectionInfo.type));
-});
-function handleFirstConnectivityChange(connectionInfo) {
-  store.dispatch(onStatusChange(connectionInfo.type));
-}
-NetInfo.addEventListener(
-  'connectionChange',
-  handleFirstConnectivityChange
-);
 
 firebase.initializeApp(firebaseConfig);
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
@@ -41,6 +22,7 @@ firebase.auth().onAuthStateChanged((user) => {
     console.log(' NOT SIGNED !');
   }
 });
+
 export default class RootComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -52,18 +34,9 @@ export default class RootComponent extends React.Component {
   render() {
     return (
       <Provider store={store}>
-          <ConnectedAppScreen />
+        <App />
       </Provider>
     );
-    /*
-    return (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ConnectedAppScreen />
-        </PersistGate>
-      </Provider>
-    );
-    */
   }
 }
 

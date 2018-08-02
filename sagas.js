@@ -1,4 +1,4 @@
-import authSagas from './screens/Auth/Login/saga';
+import authSagas from './app/screens/Auth/saga';
 
 const Sagas = [
     authSagas,
