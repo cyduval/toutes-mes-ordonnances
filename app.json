@@ -18,7 +18,7 @@
     },
     "android": {
       "package": "com.toutesmesordonnances.app",
-      "versionCode": 10002
+      "versionCode": 10003
     },
     "hooks": {
       "postPublish": [

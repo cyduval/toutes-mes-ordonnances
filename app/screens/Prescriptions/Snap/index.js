@@ -13,7 +13,10 @@ class Snap extends React.Component {
       if (this.camera) {
         const options = { quality: 0.5, base64: true };
         const data = await this.camera.takePictureAsync(options);
-        this.props.onTakePicture(data.uri);
+
+        console.log(6666);
+        console.log(data);
+        this.props.onTakePicture(data);
         this.props.navigation.navigate('New');
       }
     };

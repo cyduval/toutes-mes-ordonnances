@@ -6,6 +6,8 @@ import 'firebase/firestore';
 import { View, StyleSheet, Image } from 'react-native';
 import { Button, Icon, Text, Overlay } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
+import { sendPrescription } from 'app/screens/Prescriptions/actions';
+// import mail from 'toutesmesordonnances/utils/mail';
 
 class New extends React.Component {
 
@@ -27,7 +29,60 @@ class New extends React.Component {
   }
 
 
-    send = function() {
+
+    send1 = async() => {
+      console.log(11);
+      const { auth, prescription } = this.props;
+      if (auth.loginStatus !== 'logged') {
+        this.setState({isVisible: true});
+        return;
+      }
+      const response = await fetch(
+        'https://www.toutemapharmacie.com/public/scan/new2.php', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ordonnance: prescription.photo.base64, 
+            pharmacie: prescription.pharmacie.title, 
+            user: auth.user
+          })
+        }
+      );
+      if (response.status !== 200) {
+        throw new Error(`Got back HTTP status ${response.status}`);
+      }
+      console.log(22);
+      this.props.navigation.navigate('Home');
+  
+      // alert(11);
+
+      // const body = await response.json();
+      // alert(body);
+      // alert(JSON.stringify(body));
+
+
+      /*
+      const response = await fetch(
+        'https://www.toutemapharmacie.com/'
+      );
+      console.log(22);
+      if (response.status !== 200) {
+        throw new Error(`Got back HTTP status ${response.status}`);
+      }
+      console.log(33);
+      console.log(response);
+      alert(response.data);
+      // const body = await response.json();
+      // console.log(body);
+      */
+    };
+
+
+    send = async() => {
+      
       const { auth, prescription } = this.props;
       if (auth.loginStatus !== 'logged') {
         this.setState({isVisible: true});
@@ -38,11 +93,47 @@ class New extends React.Component {
       console.log(auth);
 
       this.ref.add({
-        uri: prescription.photo,
+        uri: prescription.photo.uri,
         pharmacie: prescription.pharmacie.title,
       });
+
+      console.log(8888);
+      try {
+        let response = await fetch('https://www.toutemapharmacie.com/public/scan/new2.php', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ordonnance: prescription.photo.base64, 
+            pharmacie: prescription.pharmacie.title, 
+            user: auth.user
+          }),
+        });
+        let responseJson = await response.json();
+        console.log(responseJson);
+      } catch (error) {
+        console.error('pbpbpb');
+        console.error(error);
+      }
+
+      console.log(9999);
+      /*
+      fetch('https://www.toutemapharmacie.com/public/scan/new2.php')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        return responseJson.movies;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      */
+      
+
+
+      // this.props.onSend({ ordonnance: prescription.photo, pharmacie: prescription.pharmacie.title, user: auth.user });
       this.props.navigation.navigate('Home');
- 
     };
 
     render() {
@@ -58,7 +149,7 @@ class New extends React.Component {
               prescription.photo ?
               (<View style={styles.element}>
                 <Image
-                  source={{uri: prescription.photo}}
+                  source={{uri: prescription.photo.uri}}
                   style={styles.picture}
                 />
                 <Button
@@ -121,7 +212,7 @@ class New extends React.Component {
             disabled={!isSendEnabled}
             buttonStyle={styles.button}
             title='Envoyer' 
-            onPress={() => this.send()}
+            onPress={() => this.send1()}
             containerStyle={[styles.containerButton, {justifyContent: 'flex-end'}]}
           />
 
@@ -235,7 +326,7 @@ const mapStateToProps = state => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-
+    onSend: data => dispatch(sendPrescription(data)),
   };
 }
 
