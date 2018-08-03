@@ -9,14 +9,14 @@ import { setPhoto } from 'app/screens/Prescriptions/actions';
 
 class Snap extends React.Component {
 
-    takePicture = async function() {
-        if (this.camera) {
-          const options = { quality: 0.5, base64: true };
-          const data = await this.camera.takePictureAsync(options);
-          this.props.onTakePicture(data.uri);
-          this.props.navigation.navigate('New');
-        }
-      };
+  takePicture = async function() {
+      if (this.camera) {
+        const options = { quality: 0.5, base64: true };
+        const data = await this.camera.takePictureAsync(options);
+        this.props.onTakePicture(data.uri);
+        this.props.navigation.navigate('New');
+      }
+    };
 
     render() {
 

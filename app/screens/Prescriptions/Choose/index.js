@@ -76,7 +76,7 @@ class Choose extends React.Component {
 
     onPress = function(pharmacieId) {
       const pharmacie = this.props.prescription.pharmacies.find( p => p.id === pharmacieId);
-      this.setState({selected: pharmacie, isVisible: true})
+      this.setState({selected: pharmacie, isVisible: true});
     };
 
     onSelect = function() {

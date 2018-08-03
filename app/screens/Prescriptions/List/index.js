@@ -1,19 +1,91 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import firebase from 'firebase';
+import 'firebase/firestore';
+import { View, StyleSheet, Image } from 'react-native';
 import { Text } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 
 class List extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const firestore = firebase.firestore();
+    const settings = {
+      timestampsInSnapshots: true
+    };
+    firestore.settings(settings);
+
+    const userUid = this.props.auth.user.uid;
+    this.ref = firestore.collection(userUid);
+    this.unsubscribe = null;
+    this.state = {
+      datas: [],
+      loading: true,
+    };
+  }
+
+  componentDidMount() {
+    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const datas = [];
+    querySnapshot.forEach((doc) => {
+      const { uri, pharmacie } = doc.data();
+      datas.push({
+        key: doc.id, // Document ID
+        doc, // DocumentSnapshot
+        uri,
+        pharmacie,
+      });
+    });
+    this.setState({
+      datas,
+      loading: false,
+   });
+  }
 
     render() {
+      const { auth } = this.props;
+      const { datas } = this.state;
+      if (auth.loginStatus !== 'logged') {
+        return (
+          <Text>
+          Vous devez etre loggué
+        </Text>
+        );
+      }
+
       return (
         <View style={styles.container}>
 
-            <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 25 }}>
+            <View style={{ flex: 1, flexDirection: 'column', padding: 25 }}>
 
-            <Text>
-              List
-            </Text>
+            {
+              datas.map((data) => {
+                return (
+                  <View style={styles.item}>
+                    <View>
+                      <Text>
+                        {data.pharmacie}
+                      </Text>
+                    </View>
+                    <View>
+                    <Image
+                      source={{uri: data.uri}}
+                      style={styles.picture}
+                    />
+                    </View>
+                  </View>
+                )
+              })
+            }
 
 
 
@@ -28,7 +100,38 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#f3f3f3',
   },
+  item: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 70,
+    borderStyle: 'solid',
+    borderColor: 'red',
+    borderWidth: 2,
+  },
+  picture: {
+    width: 50,
+    height: 50,
+  },
 });
 
 
-export default List
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+
+  };
+}
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(
+  withConnect,
+)(List);
