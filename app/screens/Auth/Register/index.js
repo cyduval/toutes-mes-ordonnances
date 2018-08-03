@@ -1,30 +1,253 @@
 import React from 'react';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import firebase from 'firebase';
 import { View, Text, StyleSheet } from 'react-native';
+import { Button, Input } from 'react-native-elements';
+import passwordValidator from 'password-validator';
+import { colors } from 'toutesmesordonnances/constants';
+import { loginSuccess, signupFailure } from 'app/screens/Auth/actions';
+import ErrorMessage from 'app/screens/Auth/ErrorMessage';
+
+const schema = new passwordValidator();
+/*
+schema
+.is().min(8)                                    // Minimum length 8
+.is().max(100)                                  // Maximum length 100
+.has().uppercase()                              // Must have uppercase letters
+.has().lowercase()                              // Must have lowercase letters
+.has().digits()                                 // Must have digits
+.has().not().spaces()                           // Should not have spaces
+.is().not().oneOf(['Passw0rd', 'Password123']);
+*/
 
 class Register extends React.Component {
     static navigationOptions = {
         title: 'Register',
     };
+    constructor(props) {
+        super(props);
+    
+        this.state = {
+          email: '',
+          password: '',
+          passwordConfirmation: '',
+          isEmailValid: true,
+          isPasswordValid: true,
+          isConfirmationValid: true,
+          isLoading: false,
+        };
+    
+        this.register = this.register.bind(this);
+    }
   
-    render() {
-      return (
-        <View style={styles.container}>
-            <View>
-                <Text>
-                    register
-                </Text>
-            </View>
+    validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
 
+    register() {
+        const {
+          email,
+          password,
+          isPasswordValid,
+          isConfirmationValid,
+          passwordConfirmation,
+        } = this.state;
+        this.setState({ isLoading: true });
+    
+        if (!this.validateEmail(email)) {
+          this.setState({ isLoading: false, isEmailValid: false });
+          return;
+        }
+    
+        if (!schema.validate(password)) {
+          this.setState({ isLoading: false, isPasswordValid: false });
+          return;
+        }
+
+        if (password !== passwordConfirmation) {
+            this.setState({ isLoading: false, isConfirmationValid: false });
+            return;
+          }
+    
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((user) => {
+          console.log(777);
+          console.log(user);
+          this.setState({
+            isLoading: false,
+            isEmailValid: true,
+            isPasswordValid: true,
+            isConfirmationValid: true,
+          });
+          this.props.onLoginUserSuccess(user);
+          // this.props.navigation.goBack();
+          console.log(888);
+          this.props.navigation.navigate('Home');
+        })
+        .catch((error) => {
+          console.log(error);
+          this.setState({
+            isLoading: false,
+            isEmailValid: true,
+            isPasswordValid: true,
+            isConfirmationValid: true,
+          });
+          this.props.onSignupUserFailure(error.message);
+        });
+      }
+
+    render() {
+    const {
+        isLoading,
+        email,
+        isEmailValid,
+        password,
+        isPasswordValid,
+        isConfirmationValid,
+        passwordConfirmation,
+        } = this.state;
+
+        return (
+        <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.title}>
+            création de compte
+          </Text>
+          <View>
+            <Input
+              placeholder='email'
+              onSubmitEditing={() => this.passwordInput.focus()}
+              onChangeText={email => this.setState({ email })}
+              errorMessage={isEmailValid ? null : 'mot de passe invalide'}
+              value={email}
+              keyboardAppearance='light'
+              autoFocus={false}
+              autoCapitalize='none'
+              autoCorrect={false}
+              keyboardType='email-address'
+              returnKeyType='next'
+            />
+          </View>
+          <View>
+            <Input
+              placeholder='mot de passe'
+              value={password}
+              keyboardAppearance='light'
+              autoCapitalize='none'
+              autoCorrect={false}
+              secureTextEntry={true}
+              returnKeyType="done"
+              blurOnSubmit={true}
+              onChangeText={(password) => this.setState({password})}
+              errorMessage={isPasswordValid ? null : 'Please enter at least 8 characters'}
+
+            />
+            <Text style={styles.passwordRule}>
+              mot de passe doit comprendre au moins une minuscule, une majuscule, un chiffre, une lettre
+            </Text>
+          </View>
+          <View>
+            <Input
+              placeholder='repetez mot de passe'
+              value={passwordConfirmation}
+              keyboardAppearance='light'
+              autoCapitalize='none'
+              autoCorrect={false}
+              secureTextEntry={true}
+              returnKeyType="done"
+              blurOnSubmit={true}
+              onChangeText={(passwordConfirmation) => this.setState({passwordConfirmation})}
+              errorMessage={isConfirmationValid ? null : 'Mot de passe différent'}
+
+            />
+          </View>
+
+          <Button
+            title='Je crée mon compte' 
+            buttonStyle={styles.button}
+            onPress={this.register}
+          />
         </View>
+        <ErrorMessage />
+      </View>
       );
     }
   }
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 24,
+        backgroundColor: '#f3f3f3',
     },
-
+    title: {
+      fontSize: 16,
+      fontWeight: '700',
+      marginTop: 5,
+    },
+    content: {
+      flex: 1,
+      flexDirection: 'column',
+      backgroundColor: '#FFFFFF',
+      borderStyle: 'solid',
+      borderColor: '#F5F5F5',
+      borderWidth: 1,
+      borderRadius: 5,
+      padding: 10,
+      margin: 7,
+      // minHeight: 400,
+    },
+    actions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    reset: {
+      flex: 1,
+    },
+    login: {
+      flex: 1,
+    },
+    content2: {
+      maxHeight: 120,
+    },
+    button: {
+      marginTop: 15,
+      marginBottom: 15, 
+      marginLeft: 5, 
+      marginRight: 5, 
+      backgroundColor: colors.main,
+    },
+    button1: {
+      marginTop: 15,
+      marginBottom: 15, 
+      marginLeft: 5, 
+      marginRight: 5, 
+      backgroundColor: '#ffc300',
+    },
+    passwordRule: {
+      color: '#CCCCCC',
+      fontSize: 11,
+    }
 });
 
-export default Register;
+const mapStateToProps = state => {
+    return { ...state };
+  };
+  
+  function mapDispatchToProps(dispatch) {
+    return {
+      onSignupRequest: data => dispatch(signupRequest(data)),
+      onLoginUserSuccess: data => dispatch(loginSuccess(data)),
+      onSignupUserFailure: msg => dispatch(signupFailure(msg)),
+    };
+  }
+  
+  const withConnect = connect(
+      mapStateToProps,
+      mapDispatchToProps,
+    );
+  
+  export default compose(
+      withConnect,
+    )(Register);
+  

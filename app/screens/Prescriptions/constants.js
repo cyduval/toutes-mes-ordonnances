@@ -1,0 +1,3 @@
+export const SET_PHOTO = 'SET_PHOTO';
+export const SET_PHARMACIE = 'SET_PHARMACIE';
+export const RESET_PRESCRIPTION = 'RESET_PRESCRIPTION';
