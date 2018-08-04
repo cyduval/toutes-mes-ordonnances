@@ -26,7 +26,7 @@ class Prescriptions extends React.Component {
 
             <View style={{ margin: 30 }}>
               <Button
-                title='nouvelle ordonances' 
+                title='nouvelle ordonance' 
                 buttonStyle={styles.button}
                 onPress={() => this.props.navigation.navigate('New')}
               />

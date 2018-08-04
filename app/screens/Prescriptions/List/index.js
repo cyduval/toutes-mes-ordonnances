@@ -11,27 +11,35 @@ class List extends React.Component {
   constructor(props) {
     super(props);
 
-    const firestore = firebase.firestore();
-    const settings = {
-      timestampsInSnapshots: true
-    };
-    firestore.settings(settings);
-
-    const userUid = this.props.auth.user.uid;
-    this.ref = firestore.collection(userUid);
-    this.unsubscribe = null;
     this.state = {
       datas: [],
       loading: true,
     };
+
+    if (this.props.auth && this.props.auth.user) {
+      const firestore = firebase.firestore();
+      const settings = {
+        timestampsInSnapshots: true
+      };
+      firestore.settings(settings);
+
+      const userUid = this.props.auth.user.uid;
+      this.ref = firestore.collection(userUid);
+      this.unsubscribe = null;
+    }
+
   }
 
   componentDidMount() {
-    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+    if (this.props.auth && this.props.auth.user) {
+      this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+    }
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    if (this.props.auth && this.props.auth.user) {
+      this.unsubscribe();
+    }
   }
 
   onCollectionUpdate = (querySnapshot) => {
@@ -57,7 +65,7 @@ class List extends React.Component {
       if (auth.loginStatus !== 'logged') {
         return (
           <Text>
-          Vous devez etre loggué
+          Vous devez etre loggué pour voir vos ordonnances
         </Text>
         );
       }

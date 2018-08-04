@@ -6,7 +6,9 @@ import Home from 'app/screens/Home';
 import Pharmacies from 'app/screens/Pharmacies';
 import Prescriptions from 'app/screens/Prescriptions';
 import Pill from 'app/screens/Pill';
+import Timeout from 'app/screens/Timeout';
 import Account from 'app/screens/Auth/Account';
+import Onboarding from 'app/components/OnBoarding2';
 import { Icon } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 
@@ -81,7 +83,20 @@ export default createDrawerNavigator({
             ),
           }),
     },
+    Timeout: {
+        screen: Timeout,
+        navigationOptions: ({ navigation }) => ({
+            drawerLabel: ''
+        }),
+    },
+    Onboarding: {
+        screen: Onboarding,
+        navigationOptions: ({ navigation }) => ({
+            drawerLabel: 'Onboarding'
+        }),
+    },
 }, {
     // drawerPosition: 'right',
-    initialRouteName: 'Home',
+    // initialRouteName: 'Home',
+    initialRouteName: 'Timeout',
 });

@@ -18,14 +18,16 @@ class New extends React.Component {
       isVisible: false,
     };
 
-    const firestore = firebase.firestore();
-    const settings = {
-      timestampsInSnapshots: true
-    };
-    firestore.settings(settings);
+    if (this.props.auth && this.props.auth.user) {
+      const firestore = firebase.firestore();
+      const settings = {
+        timestampsInSnapshots: true
+      };
+      firestore.settings(settings);
 
-    const userUid = this.props.auth.user.uid;
-    this.ref = firestore.collection(userUid);
+      const userUid = this.props.auth.user.uid;
+      this.ref = firestore.collection(userUid);
+    }
   }
 
 

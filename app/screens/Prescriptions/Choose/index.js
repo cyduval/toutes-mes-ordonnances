@@ -6,6 +6,8 @@ import { Text, Overlay, Button } from 'react-native-elements';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { colors } from 'toutesmesordonnances/constants';
 import { setPharmacie } from 'app/screens/Prescriptions/actions';
+import distance from 'toutesmesordonnances/utils/lib/distance';
+import round2 from 'toutesmesordonnances/utils/lib/round2';
 
 class Choose extends React.Component {
 
@@ -17,8 +19,10 @@ class Choose extends React.Component {
       errorMessage: null,
       mapRegion: null,
       hasLocationPermissions: false,
+      location: null,
       locationResult: null,
       isVisible: false,
+      distance: 0,
     };
 
     this.onPress = this.onPress.bind(this);
@@ -37,6 +41,7 @@ class Choose extends React.Component {
     }
 
     _handleMapRegionChange = mapRegion => {
+        console.log(4444);
         console.log(mapRegion);
         this.setState({ mapRegion });
       };
@@ -70,13 +75,20 @@ class Choose extends React.Component {
            }, 2000);
         let location = await Location.getCurrentPositionAsync({});
 
-        this.setState({ locationResult: JSON.stringify(location) });
+        this.setState({ locationResult: location });
+        this.setState({ location: location });
         this.setState({mapRegion: { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }});
       };
 
-    onPress = function(pharmacieId) {
+    onPress = function(event, pharmacieId) {
+      console.log(2345);
+      console.log(event);
+      const { location } = this.state;
       const pharmacie = this.props.prescription.pharmacies.find( p => p.id === pharmacieId);
-      this.setState({selected: pharmacie, isVisible: true});
+
+      const dist = `${pharmacie.title} (${round2(distance(location.coords.latitude, location.coords.longitude, pharmacie.latlng.latitude, pharmacie.latlng.longitude))} km)`;
+      const mapRegion = { latitude: event.coordinate.latitude, longitude: event.coordinate.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 };
+      this.setState({selected: pharmacie, isVisible: true, distance: dist, mapRegion: mapRegion});
     };
 
     onSelect = function() {
@@ -94,9 +106,10 @@ class Choose extends React.Component {
         text = JSON.stringify(this.state.location);
       }
 
+      console.log(this.state);
       return (
         <View style={styles.container}>
-            <Text style={styles.paragraph}>{text}</Text>
+            <Text style={[styles.paragraph, { display: 'none' }]}>{text}</Text>
             {
             this.state.locationResult === null ?
             <Text>Finding your current location...</Text> :
@@ -105,7 +118,7 @@ class Choose extends React.Component {
                 this.state.mapRegion === null ?
                 <Text>Map region doesn't exist.</Text> :
                 <MapView
-                    style={{ alignSelf: 'stretch', height: 400 }}
+                    style={{ alignSelf: 'stretch', height: '100%' }}
                     ref={MapView => (this.MapView = MapView)}
                     region={this.state.mapRegion}
                     loadingEnabled = {true}
@@ -118,16 +131,18 @@ class Choose extends React.Component {
                     provider="google"
                     // onRegionChange={this._handleMapRegionChange}
                 >
-                {prescription.pharmacies.map((marker) => (
-                    <MapView.Marker
+                {prescription.pharmacies.map((marker) => {
+                    
+                    return (<MapView.Marker
                         key={marker.id}
                         id={marker.id}
                         coordinate={marker.latlng}
                         title={marker.title}
                         description={marker.description}
-                        onPress={(e) => this.onPress(marker.id)}
-                    />
-                ))}
+                        onPress={(e) => this.onPress(e.nativeEvent, marker.id)}
+                    />);
+                    }
+                )}
                 </MapView>
             }   
 
@@ -136,7 +151,7 @@ class Choose extends React.Component {
               onBackdropPress={() => this.setState({isVisible: false})}
               height={200}
             >
-              <Text h5 style={{ fontWeight: '700' }}>{this.state.selected.title}</Text>
+              <Text h5 style={{ fontWeight: '700' }}>{this.state.distance}</Text>
               <Text h5>{this.state.selected.description}</Text>
             
               <View style={styles.chooseActions}>

@@ -10,6 +10,7 @@ import {
   AsyncStorage
 } from 'react-native';
 import Onboarding from 'app/components/OnBoarding';
+import Onboarding2 from 'app/components/OnBoarding2';
 // import Stack from 'app/screens/Navigation/Stack';
 import Drawer from 'app/screens/Navigation/Drawer';
 import Drawer1 from 'app/screens/Navigation/Drawer1';
@@ -18,11 +19,12 @@ class AppScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      onboarding: false,
+      status: 'initial',
     };
     // Remove this once Sentry is correctly setup.
     // Sentry.enableInExpoDevelopment = true;
     Sentry.config('https://1453d539784e4f92982c22a166afa5a7@sentry.io/1246851').install();
+
   }
 
   componentWillMount() {
@@ -30,18 +32,22 @@ class AppScreen extends React.Component {
   }
 
   handleOnboarding = async () => {
-    const value = await AsyncStorage.getItem('onboarding');
+    const value = await AsyncStorage.getItem('onboarding1');
     if (value) {
       this.setState({
-        onboarding: value
+        status: value
       });
+    } else {
+      this.setState({
+        status: 'notOnBoarded'
+      });   
     }
   }
 
   onboardingFinish = async () => {
-    AsyncStorage.setItem('onboarding', true);
+    AsyncStorage.setItem('onboarding1', 'onBoarded');
     this.setState({
-      onboarding: true
+      status: 'onBoarded'
     });
   }
 
@@ -51,13 +57,23 @@ class AppScreen extends React.Component {
       app
     } = this.props;
 
-    if (!app || !auth) {
+    console.log(999);
+    console.log(this.state);
+
+    if (!app || !auth || this.state.status === 'initial') {
       return false;
     }
 
-    if (!this.state.onboarding) {
-      return ( <Onboarding onboardingFinish = {this.onboardingFinish}/> );
+    console.log('AA');
+    console.log(app);
+    console.log(auth);
+
+    if (this.state.status === 'notOnBoarded') {
+      console.log(2222222);
+      return ( <Onboarding2 onboardingFinish={this.onboardingFinish} /> );
     }
+
+    console.log(111111);
     
     if (this.props.auth.loginStatus === 'logged') {
       return ( <Drawer1 /> );

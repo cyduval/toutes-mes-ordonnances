@@ -3,7 +3,7 @@ import { View, StyleSheet, ImageBackground, TouchableOpacity, Dimensions } from 
 import { Icon, Text } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 
-const BG_IMAGE = require('toutesmesordonnances/assets/images/home.jpg');
+const BG_IMAGE = require('toutesmesordonnances/assets/images/home.png');
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -30,7 +30,6 @@ class Home extends React.Component {
                     <View style={styles.titleContainer}>
                     <Text style={styles.title}>Toutes mes ordonnances</Text>
                     </View>
-
 
                     <View style={styles.buttonsRow}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('Pharmacies')}>

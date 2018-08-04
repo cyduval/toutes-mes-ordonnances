@@ -25,16 +25,17 @@ class OnBoardingScreen extends React.Component {
             pages = {
                 [{
                         backgroundColor: '#fff',
-                        image: < Image source = {
-                            require('toutesmesordonnances/assets/1.png')
-                        }
+                        image: <Image source = {
+                            require('toutesmesordonnances/assets/images/user-cool.png')
+                        } 
+                        style={{width: 50, height: 50}}
                         />,
                         title: 'Onboarding 1',
                         subtitle: 'Done with React Native Onboarding Swiper',
                     },
                     {
                         backgroundColor: '#fff',
-                        image: < Image source = {
+                        image: <Image source = {
                             require('toutesmesordonnances/assets/2.png')
                         }
                         />,
