@@ -1,20 +1,25 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import { View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Header, Button } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
+import { Constants } from 'expo';
 
-import List from './List';
-import New from './New';
-import Choose from './Choose';
-import Snap from './Snap';
-
-class Prescriptions extends React.Component {
+export default class Prescriptions extends React.Component {
 
     render() {
       return (
-        <View style={styles.container}>
-            <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 25 }}>
+        <View style={styles.root}>
+          <Header
+              leftComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
+              centerComponent={{ text: 'Ordonnances', style: { color: '#fff' } }}
+              statusBarProps={{ barStyle: 'light-content' }}
+              outerContainerStyles={{ width: '100%'  }}
+              innerContainerStyles={{  }}
+              backgroundColor={colors.main}
+          />
+
+          <View style={styles.container}>
 
             <View style={{ margin: 30 }}>
               <Button
@@ -32,27 +37,40 @@ class Prescriptions extends React.Component {
               />
             </View>
 
-            </View>
+          </View>
         </View>
       );
     }
   }
 
 const styles = StyleSheet.create({
-  container: {
+  root: {
       flex: 1,
       backgroundColor: '#f3f3f3',
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      marginTop: Constants.statusBarHeight,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#f3f3f3',
+    // justifyContent: 'center', 
+    alignItems: 'center', 
+    height: '100%',
+    width: '100%',
   },
   button: {
-    marginTop: 15,
-    marginBottom: 15, 
-    marginLeft: 5, 
-    marginRight: 5, 
+    margin: 15,
     backgroundColor: colors.main,
+    padding: 10,
+    width: '100%',
   },
 });
 
 
+// export default Prescriptions;
+
+/*
 export default createStackNavigator({
   Prescriptions: {
     screen: Prescriptions,
@@ -74,9 +92,6 @@ export default createStackNavigator({
   }, 
   Choose: {
     screen: Choose,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Choisir sa pharmacie',
-    }),
   }, 
   Snap: {
     screen: Snap,
@@ -86,5 +101,6 @@ export default createStackNavigator({
   }, 
 }, {
   initialRouteName: 'Prescriptions',
+  headerMode: 'none',
 });
-
+*/

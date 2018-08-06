@@ -4,9 +4,13 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import { View, StyleSheet, Image } from 'react-native';
-import { Button, Icon, Text, Overlay } from 'react-native-elements';
+import { Header, Button, Icon, Text, Overlay } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 import { sendPrescription } from 'app/screens/Prescriptions/actions';
+import { Constants } from 'expo';
+// import * as moment from 'moment';
+
+import moment from 'moment';
 // import mail from 'toutesmesordonnances/utils/mail';
 
 class New extends React.Component {
@@ -39,6 +43,19 @@ class New extends React.Component {
         this.setState({isVisible: true});
         return;
       }
+
+
+      console.log(111);
+      console.log(  moment().format('YYYY-MM-DD HH:mm:ss')  );
+
+      this.ref.add({
+        uri: prescription.photo.uri,
+        base64: prescription.photo.base64,
+        pharmacie: prescription.pharmacie.title,
+        date: moment().format('YYYY-MM-DD HH:mm:ss'),
+      });
+
+
       const response = await fetch(
         'https://www.toutemapharmacie.com/public/scan/new2.php', {
           method: 'POST',
@@ -57,7 +74,7 @@ class New extends React.Component {
         throw new Error(`Got back HTTP status ${response.status}`);
       }
       console.log(22);
-      this.props.navigation.navigate('Home');
+      this.props.navigation.navigate('List');
   
       // alert(11);
 
@@ -97,6 +114,7 @@ class New extends React.Component {
       this.ref.add({
         uri: prescription.photo.uri,
         pharmacie: prescription.pharmacie.title,
+        date: moment().format('YYYY-MM-DD hh:ii:ss'),
       });
 
       console.log(8888);
@@ -142,10 +160,16 @@ class New extends React.Component {
       const { prescription } = this.props; 
       const isSendEnabled = prescription && prescription.photo && prescription.pharmacie;
       return (
-        <View style={styles.container}>
-
-
-          <View style={{ flex: 1 }}>
+        <View style={styles.root}>
+          <Header
+              leftComponent={{ size: 30, icon: 'keyboard-backspace', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
+              centerComponent={{ text: 'Mes ordonnances', style: { color: '#fff' } }}
+              statusBarProps={{ barStyle: 'light-content' }}
+              outerContainerStyles={{ width: '100%'  }}
+              innerContainerStyles={{  }}
+              backgroundColor={colors.main}
+          />
+          <View style={styles.container}>
 
             {
               prescription.photo ?
@@ -247,12 +271,20 @@ class New extends React.Component {
   }
 
   const styles = StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: '#f3f3f3',
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      marginTop: Constants.statusBarHeight,
+    },
     container: {
-        flex: 1,
-        backgroundColor: '#f3f3f3',
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        padding: 15,
+      flex: 1,
+      backgroundColor: '#f3f3f3',
+      // justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100%',
+      width: '100%',
     },
     containerButton: {
       justifyContent: 'center',

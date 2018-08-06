@@ -86,7 +86,7 @@ export default createDrawerNavigator({
     Timeout: {
         screen: Timeout,
         navigationOptions: ({ navigation }) => ({
-            drawerLabel: ''
+            drawerLabel: ' '
         }),
     },
     Onboarding: {

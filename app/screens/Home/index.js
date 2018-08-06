@@ -35,14 +35,14 @@ class Home extends React.Component {
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('Pharmacies')}>
                             <View style={[styles.buttonInner, styles.buttonInner1]}>
                                 <Text style={styles.buttonText}>
-                                    Mes pharmacies
+                                    Pharmacies
                                 </Text>           
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('Prescriptions')}>
                             <View style={[styles.buttonInner, styles.buttonInner2]}>
                                 <Text style={styles.buttonText}>
-                                    Envoyer mon ordonnance
+                                    Ordonnances
                                 </Text>           
                             </View>
                         </TouchableOpacity>

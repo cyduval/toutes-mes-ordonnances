@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import { View, StyleSheet, Image } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Header, ListItem, Text } from 'react-native-elements';
+import { Constants } from 'expo';
 import { colors } from 'toutesmesordonnances/constants';
 
 class List extends React.Component {
@@ -45,12 +46,14 @@ class List extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const datas = [];
     querySnapshot.forEach((doc) => {
-      const { uri, pharmacie } = doc.data();
+      const { uri, date, base64, pharmacie } = doc.data();
       datas.push({
         key: doc.id, // Document ID
         doc, // DocumentSnapshot
         uri,
         pharmacie,
+        date,
+        base64,
       });
     });
     this.setState({
@@ -71,26 +74,28 @@ class List extends React.Component {
       }
 
       return (
-        <View style={styles.container}>
-
-            <View style={{ flex: 1, flexDirection: 'column', padding: 25 }}>
+        <View style={styles.root}>
+          <Header
+              leftComponent={{ size: 30, icon: 'keyboard-backspace', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
+              centerComponent={{ text: 'Mes ordonnances', style: { color: '#fff' } }}
+              statusBarProps={{ barStyle: 'light-content' }}
+              outerContainerStyles={{ width: '100%'  }}
+              innerContainerStyles={{  }}
+              backgroundColor={colors.main}
+          />
+            <View style={styles.container}>
 
             {
               datas.map((data) => {
                 return (
-                  <View style={styles.item}>
-                    <View>
-                      <Text>
-                        {data.pharmacie}
-                      </Text>
-                    </View>
-                    <View>
-                    <Image
-                      source={{uri: data.uri}}
-                      style={styles.picture}
-                    />
-                    </View>
-                  </View>
+                  <ListItem
+                    key={data.date}
+                    leftAvatar={{ source: { uri: data.uri } }}
+                    title={data.date}
+                    subtitle={data.pharmacie}
+                    // leftIcon={{ name: 'home' }}
+                    containerStyle={styles.item}
+                  />
                 )
               })
             }
@@ -104,23 +109,28 @@ class List extends React.Component {
   }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: '#f3f3f3',
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginTop: Constants.statusBarHeight,
+  },
   container: {
-      flex: 1,
-      backgroundColor: '#f3f3f3',
+    flex: 1,
+    backgroundColor: '#f3f3f3',
+    // justifyContent: 'center', 
+    alignItems: 'center', 
+    height: '100%',
+    width: '100%',
   },
   item: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: '100%', 
     height: 70,
+    borderBottomWidth: 2,
+    borderColor: '#F5F5F5',
     borderStyle: 'solid',
-    borderColor: 'red',
-    borderWidth: 2,
-  },
-  picture: {
-    width: 50,
-    height: 50,
+    marginBottom: 3,
   },
 });
 

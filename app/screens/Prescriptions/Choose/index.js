@@ -1,8 +1,8 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Platform, View, StyleSheet } from 'react-native';
-import { Text, Overlay, Button } from 'react-native-elements';
+import { View, StyleSheet } from 'react-native';
+import { Header, Text, Overlay, Button } from 'react-native-elements';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { colors } from 'toutesmesordonnances/constants';
 import { setPharmacie } from 'app/screens/Prescriptions/actions';
@@ -126,71 +126,89 @@ class Choose extends React.Component {
 
       console.log(this.state);
       return (
-        <View style={styles.container}>
-          <MapView
-              style={{ alignSelf: 'stretch', height: '100%' }}
-              ref={MapView => (this.MapView = MapView)}
-              region={this.state.mapRegion}
-              loadingEnabled = {true}
-              loadingIndicatorColor="#666666"
-              loadingBackgroundColor="#eeeeee"
-              moveOnMarkerPress = {false}
-              showsUserLocation={true}
-              showsCompass={true}
-              showsPointsOfInterest = {false}
-              provider="google"
-              // onRegionChange={this._handleMapRegionChange}
-          >
-          {prescription.pharmacies.map((marker) => {
-              
-              return (<MapView.Marker
-                  key={marker.id}
-                  id={marker.id}
-                  coordinate={marker.latlng}
-                  title={marker.title}
-                  description={marker.description}
-                  onPress={(e) => this.onPress(e.nativeEvent, marker.id)}
-              />);
-              }
-          )}
-          </MapView>
-          
-          <Overlay
-            isVisible={this.state.isVisible}
-            onBackdropPress={() => this.setState({isVisible: false})}
-            height={200}
-          >
-            <Text h5 style={{ fontWeight: '700' }}>{this.state.distance}</Text>
-            <Text h5>{this.state.selected.description}</Text>
-          
-            <View style={styles.chooseActions}>
-              <Button
-                buttonStyle={styles.chooseButton1}
-                title='Annuler' 
-                onPress={() => this.setState({isVisible: false})}
-                containerStyle={styles.containerButton}
-              />
-              <Button
-                buttonStyle={styles.chooseButton2}
-                title='Choisir' 
-                onPress={() => { this.setState({isVisible: false}); this.onSelect(); } }
-                containerStyle={styles.containerButton}
-              />
-            </View>
-          </Overlay>
-
+        <View style={styles.root}>
+          <Header
+              leftComponent={{ size: 30, icon: 'keyboard-backspace', type: 'MaterialCommunityIcons', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
+              centerComponent={{ text: 'Pharmacies', style: { color: '#FFFFFF' } }}
+              statusBarProps={{ barStyle: 'light-content' }}
+              outerContainerStyles={{ width: '100%' }}
+              innerContainerStyles={{  }}
+              backgroundColor={colors.main}
+          />
+          <View style={styles.container}>
+            <MapView
+                style={{ alignSelf: 'stretch', height: '100%' }}
+                ref={MapView => (this.MapView = MapView)}
+                region={this.state.mapRegion}
+                loadingEnabled = {true}
+                loadingIndicatorColor="#666666"
+                loadingBackgroundColor="#eeeeee"
+                moveOnMarkerPress = {false}
+                showsUserLocation={true}
+                showsCompass={true}
+                showsPointsOfInterest = {false}
+                provider="google"
+                // onRegionChange={this._handleMapRegionChange}
+            >
+            {prescription.pharmacies.map((marker) => {
+                
+                return (<MapView.Marker
+                    key={marker.id}
+                    id={marker.id}
+                    coordinate={marker.latlng}
+                    title={marker.title}
+                    description={marker.description}
+                    onPress={(e) => this.onPress(e.nativeEvent, marker.id)}
+                />);
+                }
+            )}
+            </MapView>
+            
+            <Overlay
+              isVisible={this.state.isVisible}
+              onBackdropPress={() => this.setState({isVisible: false})}
+              height={200}
+            >
+              <Text h5 style={{ fontWeight: '700' }}>{this.state.distance}</Text>
+              <Text h5>{this.state.selected.description}</Text>
+            
+              <View style={styles.chooseActions}>
+                <Button
+                  buttonStyle={styles.chooseButton1}
+                  title='Annuler' 
+                  onPress={() => this.setState({isVisible: false})}
+                  containerStyle={styles.containerButton}
+                />
+                <Button
+                  buttonStyle={styles.chooseButton2}
+                  title='Choisir' 
+                  onPress={() => { this.setState({isVisible: false}); this.onSelect(); } }
+                  containerStyle={styles.containerButton}
+                />
+              </View>
+            </Overlay>
+          </View>
         </View>
       );
     }
   }
 
   const styles = StyleSheet.create({
-    container: {
+    root: {
         flex: 1,
         backgroundColor: '#f3f3f3',
         justifyContent: 'center', 
         alignItems: 'center', 
-        padding: 15,
+        marginTop: Constants.statusBarHeight,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: '#f3f3f3',
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100%',
+      width: '100%',
+
     },
     chooseActions: {
       flex: 1,

@@ -86,7 +86,7 @@ export default createDrawerNavigator({
     Timeout: {
         screen: Timeout,
         navigationOptions: ({ navigation }) => ({
-            drawerLabel: ''
+            drawerLabel: ' '
         }),
     },
     Onboarding: {
@@ -95,6 +95,7 @@ export default createDrawerNavigator({
             drawerLabel: 'Onboarding'
         }),
     },
+
 }, {
     // drawerPosition: 'right',
     // initialRouteName: 'Home',

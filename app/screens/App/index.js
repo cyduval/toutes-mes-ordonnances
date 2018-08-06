@@ -11,9 +11,7 @@ import {
 } from 'react-native';
 import Onboarding from 'app/components/OnBoarding';
 import Onboarding2 from 'app/components/OnBoarding2';
-// import Stack from 'app/screens/Navigation/Stack';
-import Drawer from 'app/screens/Navigation/Drawer';
-import Drawer1 from 'app/screens/Navigation/Drawer1';
+import Stack from 'app/screens/Navigation/Stack';
 
 class AppScreen extends React.Component {
   constructor(props) {
@@ -57,28 +55,15 @@ class AppScreen extends React.Component {
       app
     } = this.props;
 
-    console.log(999);
-    console.log(this.state);
-
     if (!app || !auth || this.state.status === 'initial') {
       return false;
     }
 
-    console.log('AA');
-    console.log(app);
-    console.log(auth);
-
     if (this.state.status === 'notOnBoarded') {
-      console.log(2222222);
       return ( <Onboarding2 onboardingFinish={this.onboardingFinish} /> );
     }
-
-    console.log(111111);
     
-    if (this.props.auth.loginStatus === 'logged') {
-      return ( <Drawer1 /> );
-    }
-    return ( <Drawer /> );
+    return ( <Stack /> );
   }
 }
 
