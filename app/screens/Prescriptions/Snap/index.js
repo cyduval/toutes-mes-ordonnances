@@ -1,27 +1,68 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { View, StyleSheet } from 'react-native';
-import { Camera } from 'expo';
-import { Button, Icon } from 'react-native-elements';
+import { Alert, View, StyleSheet } from 'react-native';
+import { Camera, Permissions } from 'expo';
+import { Button, Icon, Text } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 import { setPhoto } from 'app/screens/Prescriptions/actions';
 
 class Snap extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      granted: false,
+    };
+    
+    this.takePicture = this.takePicture.bind(this);
+  }
+
+  componentWillMount = async () => {
+    await this.askPermissionsAsync();
+  }
+
+  askPermissionsAsync = async () => {
+    const r1 = await Permissions.askAsync(Permissions.CAMERA);
+    // const r2 = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    // if (r1.status !== 'granted' || r2.status !== 'granted') {
+    if (r1.status !== 'granted') {
+      Alert.alert(
+        'Vous devez autoriser l\' appareil photo pour cette application',
+        '',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+      );
+    } else {
+      this.setState({ granted: true });
+    }
+    
+  };
 
   takePicture = async function() {
       if (this.camera) {
         const options = { quality: 0.5, base64: true };
         const data = await this.camera.takePictureAsync(options);
 
-        console.log(6666);
-        console.log(data);
         this.props.onTakePicture(data);
         this.props.navigation.navigate('New');
       }
     };
 
     render() {
+      const { granted } = this.state;
+
+      if (!granted) {
+        return (
+          <View style={styles.container}>
+            <Text>
+            Vous devez autoriser l' appareil photo pour cette application
+            </Text>
+          </View>
+        )
+      }
 
       return (
         <View style={styles.container}>

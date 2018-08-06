@@ -15,12 +15,12 @@ class Choose extends React.Component {
     super(props);
 
     this.state = {
+      granted: false,
+      locationEnabled: true,
       selected: false,
       errorMessage: null,
       mapRegion: null,
-      hasLocationPermissions: false,
       location: null,
-      locationResult: null,
       isVisible: false,
       distance: 0,
     };
@@ -29,16 +29,26 @@ class Choose extends React.Component {
   }
 
 
-    componentWillMount() {
-        if (Platform.OS === 'android' && !Constants.isDevice) {
-          this.setState({
-            errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-          });
-        } else {
-          this._getLocationAsync();
-        }
-        // alert(11);
+    componentWillMount = async () => {
+      await this.askPermissionsAsync();
     }
+
+    askPermissionsAsync = async () => {
+      const r = await Permissions.askAsync(Permissions.LOCATION);
+      if (r.status !== 'granted') {
+        Alert.alert(
+          'La fonction location doit etre activée pour que l\'application fonctionne',
+          '',
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          { cancelable: false }
+        );
+      } else {
+        await this._getLocationAsync();
+        this.setState({ granted: true });
+      }
+    };
 
     _handleMapRegionChange = mapRegion => {
         console.log(4444);
@@ -47,7 +57,7 @@ class Choose extends React.Component {
       };
 
     _checkLocationStatus = () => {
-        if (!this.state.locationResult) {
+        if (!this.state.location) {
             /*
             IntentLauncherAndroid.startActivityAsync(
                 IntentLauncherAndroid.ACTION_LOCATION_SOURCE_SETTINGS
@@ -60,25 +70,15 @@ class Choose extends React.Component {
     };
 
     _getLocationAsync = async () => {
-        let { status } = await Permissions.askAsync(Permissions.LOCATION);
-        // alert(status);
-        if (status !== 'granted') {
-          this.setState({
-            errorMessage: 'Permission to access location was denied',
-          });
-        } else {
-            this.setState({ hasLocationPermissions: true });
-        }
-
-        setTimeout(() => {
-            this._checkLocationStatus();
-           }, 2000);
+      try {
         let location = await Location.getCurrentPositionAsync({});
-
-        this.setState({ locationResult: location });
-        this.setState({ location: location });
-        this.setState({mapRegion: { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }});
-      };
+        const mapRegion = { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 };
+        this.setState({ location: location, mapRegion: mapRegion });
+      } catch (error) {
+        console.log(error);
+        this.setState({ locationEnabled: false });
+      }
+    };
 
     onPress = function(event, pharmacieId) {
       console.log(2345);
@@ -99,76 +99,85 @@ class Choose extends React.Component {
     
     render() {
       const { prescription } = this.props;
-      let text = 'Waiting..';
-      if (this.state.errorMessage) {
-        text = this.state.errorMessage;
-      } else if (this.state.location) {
-        text = JSON.stringify(this.state.location);
+      const { granted, locationEnabled } = this.state;
+
+      if (!granted) {
+        return (
+          <View style={styles.container}>
+            <Text>
+           Vous devez autoriser l'application à acceder à votre localisation
+            </Text>
+          </View>
+        )
       }
+      if (!locationEnabled) {
+        return (
+          <View style={styles.container}>
+            <Text>
+            La fonction location doit etre activée pour que l'application fonctionne
+            </Text>
+          </View>
+        )
+      }
+
+      
+
+
 
       console.log(this.state);
       return (
         <View style={styles.container}>
-            <Text style={[styles.paragraph, { display: 'none' }]}>{text}</Text>
-            {
-            this.state.locationResult === null ?
-            <Text>Finding your current location...</Text> :
-            this.state.hasLocationPermissions === false ?
-                <Text>Location permissions are not granted.</Text> :
-                this.state.mapRegion === null ?
-                <Text>Map region doesn't exist.</Text> :
-                <MapView
-                    style={{ alignSelf: 'stretch', height: '100%' }}
-                    ref={MapView => (this.MapView = MapView)}
-                    region={this.state.mapRegion}
-                    loadingEnabled = {true}
-                    loadingIndicatorColor="#666666"
-                    loadingBackgroundColor="#eeeeee"
-                    moveOnMarkerPress = {false}
-                    showsUserLocation={true}
-                    showsCompass={true}
-                    showsPointsOfInterest = {false}
-                    provider="google"
-                    // onRegionChange={this._handleMapRegionChange}
-                >
-                {prescription.pharmacies.map((marker) => {
-                    
-                    return (<MapView.Marker
-                        key={marker.id}
-                        id={marker.id}
-                        coordinate={marker.latlng}
-                        title={marker.title}
-                        description={marker.description}
-                        onPress={(e) => this.onPress(e.nativeEvent, marker.id)}
-                    />);
-                    }
-                )}
-                </MapView>
-            }   
-
-            <Overlay
-              isVisible={this.state.isVisible}
-              onBackdropPress={() => this.setState({isVisible: false})}
-              height={200}
-            >
-              <Text h5 style={{ fontWeight: '700' }}>{this.state.distance}</Text>
-              <Text h5>{this.state.selected.description}</Text>
-            
-              <View style={styles.chooseActions}>
-                <Button
-                  buttonStyle={styles.chooseButton1}
-                  title='Annuler' 
-                  onPress={() => this.setState({isVisible: false})}
-                  containerStyle={styles.containerButton}
-                />
-                <Button
-                  buttonStyle={styles.chooseButton2}
-                  title='Choisir' 
-                  onPress={() => { this.setState({isVisible: false}); this.onSelect(); } }
-                  containerStyle={styles.containerButton}
-                />
-              </View>
-            </Overlay>
+          <MapView
+              style={{ alignSelf: 'stretch', height: '100%' }}
+              ref={MapView => (this.MapView = MapView)}
+              region={this.state.mapRegion}
+              loadingEnabled = {true}
+              loadingIndicatorColor="#666666"
+              loadingBackgroundColor="#eeeeee"
+              moveOnMarkerPress = {false}
+              showsUserLocation={true}
+              showsCompass={true}
+              showsPointsOfInterest = {false}
+              provider="google"
+              // onRegionChange={this._handleMapRegionChange}
+          >
+          {prescription.pharmacies.map((marker) => {
+              
+              return (<MapView.Marker
+                  key={marker.id}
+                  id={marker.id}
+                  coordinate={marker.latlng}
+                  title={marker.title}
+                  description={marker.description}
+                  onPress={(e) => this.onPress(e.nativeEvent, marker.id)}
+              />);
+              }
+          )}
+          </MapView>
+          
+          <Overlay
+            isVisible={this.state.isVisible}
+            onBackdropPress={() => this.setState({isVisible: false})}
+            height={200}
+          >
+            <Text h5 style={{ fontWeight: '700' }}>{this.state.distance}</Text>
+            <Text h5>{this.state.selected.description}</Text>
+          
+            <View style={styles.chooseActions}>
+              <Button
+                buttonStyle={styles.chooseButton1}
+                title='Annuler' 
+                onPress={() => this.setState({isVisible: false})}
+                containerStyle={styles.containerButton}
+              />
+              <Button
+                buttonStyle={styles.chooseButton2}
+                title='Choisir' 
+                onPress={() => { this.setState({isVisible: false}); this.onSelect(); } }
+                containerStyle={styles.containerButton}
+              />
+            </View>
+          </Overlay>
 
         </View>
       );
