@@ -25,7 +25,8 @@ class List extends React.Component {
       firestore.settings(settings);
 
       const userUid = this.props.auth.user.uid;
-      this.ref = firestore.collection(userUid);
+      // this.ref = firestore.collection(userUid);
+      this.ref = firestore.collection('prescriptions').where("user", "==", userUid);
       this.unsubscribe = null;
     }
 
@@ -39,7 +40,7 @@ class List extends React.Component {
 
   componentWillUnmount() {
     if (this.props.auth && this.props.auth.user) {
-      this.unsubscribe();
+      this.unsubscribe = null;
     }
   }
 

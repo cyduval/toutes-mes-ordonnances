@@ -6,7 +6,7 @@ import 'firebase/firestore';
 import { View, StyleSheet, Image } from 'react-native';
 import { Header, Button, Icon, Text, Overlay } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
-import { sendPrescription } from 'app/screens/Prescriptions/actions';
+import { sendPrescription, resetPrescription } from 'app/screens/Prescriptions/actions';
 import { Constants } from 'expo';
 // import * as moment from 'moment';
 
@@ -30,14 +30,14 @@ class New extends React.Component {
       firestore.settings(settings);
 
       const userUid = this.props.auth.user.uid;
-      this.ref = firestore.collection(userUid);
+      // this.ref = firestore.collection(userUid);
+      this.ref = firestore.collection('prescriptions');
     }
   }
 
 
 
     send1 = async() => {
-      console.log(11);
       const { app, auth, prescription } = this.props;
       if (auth.loginStatus !== 'logged') {
         this.setState({isVisible: true});
@@ -49,16 +49,15 @@ class New extends React.Component {
         return;
       }
 
-
-      console.log(111);
-      console.log(  moment().format('YYYY-MM-DD HH:mm:ss')  );
-
       this.ref.add({
         uri: prescription.photo.uri,
         base64: prescription.photo.base64,
         pharmacie: prescription.pharmacie.title,
         date: moment().format('YYYY-MM-DD HH:mm:ss'),
+        user: this.props.auth.user.uid
       });
+
+      this.props.onResetPrescription();
 
 
       const response = await fetch(
@@ -154,8 +153,7 @@ class New extends React.Component {
         console.error(error);
       });
       */
-      
-
+    
 
       // this.props.onSend({ ordonnance: prescription.photo, pharmacie: prescription.pharmacie.title, user: auth.user });
       this.props.navigation.navigate('Home');
@@ -367,6 +365,7 @@ const mapStateToProps = state => ({
 function mapDispatchToProps(dispatch) {
   return {
     onSend: data => dispatch(sendPrescription(data)),
+    onResetPrescription: () => dispatch(resetPrescription()),
   };
 }
 
