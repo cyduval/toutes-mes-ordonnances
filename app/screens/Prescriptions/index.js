@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStackNavigator } from 'react-navigation';
 import { View, StyleSheet } from 'react-native';
 import { Header, Button } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
@@ -66,41 +65,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-
-
-// export default Prescriptions;
-
-/*
-export default createStackNavigator({
-  Prescriptions: {
-    screen: Prescriptions,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Ordonnances',
-    }),
-  },
-  New: {
-    screen: New,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Nouvelle ordonnance',
-    }),
-  },  
-  List: {
-    screen: List,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Liste de mes ordonnances',
-    }),
-  }, 
-  Choose: {
-    screen: Choose,
-  }, 
-  Snap: {
-    screen: Snap,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Prendre une photo',
-    }),
-  }, 
-}, {
-  initialRouteName: 'Prescriptions',
-  headerMode: 'none',
-});
-*/

@@ -7,14 +7,14 @@ import Pharmacies from 'app/screens/Pharmacies';
 import Prescriptions from 'app/screens/Prescriptions';
 import Pill from 'app/screens/Pill';
 import Timeout from 'app/screens/Timeout';
-import Account from 'app/screens/Auth/Account';
+import Login from 'app/screens/Auth/Login';
 import Onboarding from 'app/components/OnBoarding2';
 import { Icon } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 
 export default createDrawerNavigator({
-    Account: {
-        screen: Account,
+    Login: {
+        screen: Login,
         navigationOptions: ({ navigation }) => ({
             drawerLabel: 'M\'identifier',
             drawerIcon: ({ tintColor }) => (

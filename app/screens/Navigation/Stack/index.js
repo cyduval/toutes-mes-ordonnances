@@ -4,10 +4,17 @@ import { connect } from 'react-redux';
 import { createStackNavigator } from 'react-navigation';
 import Drawer from 'app/screens/Navigation/Drawer';
 import Drawer1 from 'app/screens/Navigation/Drawer1';
+
+
 import List from 'app/screens/Prescriptions/List';
 import New from 'app/screens/Prescriptions/New';
 import Choose from 'app/screens/Prescriptions/Choose';
 import Snap from 'app/screens/Prescriptions/Snap';
+
+import Login from 'app/screens/Auth/Login';
+import Reset from 'app/screens/Auth/Reset';
+import Register from 'app/screens/Auth/Register';
+import Profile from 'app/screens/Auth/Profile';
 
 const RootStack = createStackNavigator(
     {
@@ -17,6 +24,11 @@ const RootStack = createStackNavigator(
         Snap: Snap,
         New: New,
         List: List,
+
+        Login: Login,
+        Reset: Reset,
+        Register: Register,
+        Profile: Profile,
     },
     {
       initialRouteName: 'Drawer',
@@ -32,6 +44,12 @@ const RootStack = createStackNavigator(
         Snap: Snap,
         New: New,
         List: List,
+
+        Login: Login,
+        Reset: Reset,
+        Register: Register,
+        Profile: Profile,
+
     },
     {
       initialRouteName: 'Drawer',

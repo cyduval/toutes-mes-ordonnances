@@ -3,11 +3,12 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button, Input } from 'react-native-elements';
+import { Header, Button, Input } from 'react-native-elements';
 import passwordValidator from 'password-validator';
 import { colors } from 'toutesmesordonnances/constants';
 import { loginSuccess, signupFailure } from 'app/screens/Auth/actions';
 import ErrorMessage from 'app/screens/Auth/ErrorMessage';
+import { Constants } from 'expo';
 
 const schema = new passwordValidator();
 /*
@@ -54,6 +55,13 @@ class Register extends React.Component {
           isConfirmationValid,
           passwordConfirmation,
         } = this.state;
+        const { app } = this.props;
+        if (app.isNetwork === 'none' || app.isNetwork === 'unknown' || app.isNetwork === 'undefined') {
+          noNetwork();
+          return;
+        }
+
+
         this.setState({ isLoading: true });
     
         if (!this.validateEmail(email)) {
@@ -110,75 +118,94 @@ class Register extends React.Component {
         } = this.state;
 
         return (
-        <View style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>
-            création de compte
-          </Text>
-          <View>
-            <Input
-              placeholder='email'
-              onSubmitEditing={() => this.passwordInput.focus()}
-              onChangeText={email => this.setState({ email })}
-              errorMessage={isEmailValid ? null : 'mot de passe invalide'}
-              value={email}
-              keyboardAppearance='light'
-              autoFocus={false}
-              autoCapitalize='none'
-              autoCorrect={false}
-              keyboardType='email-address'
-              returnKeyType='next'
-            />
-          </View>
-          <View>
-            <Input
-              placeholder='mot de passe'
-              value={password}
-              keyboardAppearance='light'
-              autoCapitalize='none'
-              autoCorrect={false}
-              secureTextEntry={true}
-              returnKeyType="done"
-              blurOnSubmit={true}
-              onChangeText={(password) => this.setState({password})}
-              errorMessage={isPasswordValid ? null : 'Please enter at least 8 characters'}
-
-            />
-            <Text style={styles.passwordRule}>
-              mot de passe doit comprendre au moins une minuscule, une majuscule, un chiffre, une lettre
-            </Text>
-          </View>
-          <View>
-            <Input
-              placeholder='repetez mot de passe'
-              value={passwordConfirmation}
-              keyboardAppearance='light'
-              autoCapitalize='none'
-              autoCorrect={false}
-              secureTextEntry={true}
-              returnKeyType="done"
-              blurOnSubmit={true}
-              onChangeText={(passwordConfirmation) => this.setState({passwordConfirmation})}
-              errorMessage={isConfirmationValid ? null : 'Mot de passe différent'}
-
-            />
-          </View>
-
-          <Button
-            title='Je crée mon compte' 
-            buttonStyle={styles.button}
-            onPress={this.register}
+        <View style={styles.root}>
+          <Header
+              leftComponent={{ size: 30, icon: 'keyboard-backspace', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
+              centerComponent={{ text: 'Mes ordonnances', style: { color: '#fff' } }}
+              statusBarProps={{ barStyle: 'light-content' }}
+              outerContainerStyles={{ width: '100%'  }}
+              innerContainerStyles={{  }}
+              backgroundColor={colors.main}
           />
-        </View>
+          <View style={styles.content}>
+            <Text style={styles.title}>
+              création de compte
+            </Text>
+            <View>
+              <Input
+                placeholder='email'
+                onSubmitEditing={() => this.passwordInput.focus()}
+                onChangeText={email => this.setState({ email })}
+                errorMessage={isEmailValid ? null : 'mot de passe invalide'}
+                value={email}
+                keyboardAppearance='light'
+                autoFocus={false}
+                autoCapitalize='none'
+                autoCorrect={false}
+                keyboardType='email-address'
+                returnKeyType='next'
+              />
+            </View>
+            <View>
+              <Input
+                placeholder='mot de passe'
+                value={password}
+                keyboardAppearance='light'
+                autoCapitalize='none'
+                autoCorrect={false}
+                secureTextEntry={true}
+                returnKeyType="done"
+                blurOnSubmit={true}
+                onChangeText={(password) => this.setState({password})}
+                errorMessage={isPasswordValid ? null : 'Please enter at least 8 characters'}
+
+              />
+              <Text style={styles.passwordRule}>
+                mot de passe doit comprendre au moins une minuscule, une majuscule, un chiffre, une lettre
+              </Text>
+            </View>
+            <View>
+              <Input
+                placeholder='repetez mot de passe'
+                value={passwordConfirmation}
+                keyboardAppearance='light'
+                autoCapitalize='none'
+                autoCorrect={false}
+                secureTextEntry={true}
+                returnKeyType="done"
+                blurOnSubmit={true}
+                onChangeText={(passwordConfirmation) => this.setState({passwordConfirmation})}
+                errorMessage={isConfirmationValid ? null : 'Mot de passe différent'}
+
+              />
+            </View>
+
+            <Button
+              title='Je crée mon compte' 
+              buttonStyle={styles.button}
+              onPress={this.register}
+            />
+          </View>
         <ErrorMessage />
       </View>
       );
     }
   }
   const styles = StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: '#f3f3f3',
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      marginTop: Constants.statusBarHeight,
+    },
     container: {
-        flex: 1,
-        backgroundColor: '#f3f3f3',
+      flex: 1,
+      backgroundColor: '#f3f3f3',
+      // justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100%',
+      width: '100%',
     },
     title: {
       fontSize: 16,
@@ -230,10 +257,11 @@ class Register extends React.Component {
     }
 });
 
-const mapStateToProps = state => {
-    return { ...state };
-  };
-  
+const mapStateToProps = state => ({
+  app: state.app,
+  auth: state.auth,
+});
+
   function mapDispatchToProps(dispatch) {
     return {
       onSignupRequest: data => dispatch(signupRequest(data)),

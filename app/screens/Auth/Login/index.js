@@ -2,13 +2,14 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { withNavigation } from 'react-navigation';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button, Input, Divider } from 'react-native-elements';
+import { Button, Header, Input, Divider } from 'react-native-elements';
 import passwordValidator from 'password-validator';
 import { colors } from 'toutesmesordonnances/constants';
 import { loginSuccess, loginFailure } from 'app/screens/Auth/actions';
 import ErrorMessage from 'app/screens/Auth/ErrorMessage';
+import { Constants } from 'expo';
+import noNetwork from 'toutesmesordonnances/utils/noNetwork';
 
 const schema = new passwordValidator();
 /*
@@ -54,6 +55,12 @@ class Login extends React.Component {
   }
 
   login() {
+    const { app } = this.props;
+    if (app.isNetwork === 'none' || app.isNetwork === 'unknown' || app.isNetwork === 'undefined') {
+      noNetwork();
+      return;
+    }
+ 
     const {
       email,
       password,
@@ -106,8 +113,17 @@ class Login extends React.Component {
     } = this.state;
 
     return (
-      <View style={styles.container}>
-        <View style={styles.content}>
+      <View style={styles.root}>
+            <Header
+                leftComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
+                centerComponent={{ text: 'Authentification', style: { color: '#fff' } }}
+                statusBarProps={{ barStyle: 'light-content' }}
+                outerContainerStyles={{ width: '100%'  }}
+                innerContainerStyles={{  }}
+                backgroundColor={colors.main}
+            />
+
+          <View style={styles.container}>
           <Text style={styles.title}>
             J'ai déjà un compte
           </Text>
@@ -179,16 +195,14 @@ class Login extends React.Component {
     }
   }
 const styles = StyleSheet.create({
-    container: {
+      root: {
         flex: 1,
         backgroundColor: '#f3f3f3',
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginTop: Constants.statusBarHeight,
     },
-    title: {
-      fontSize: 16,
-      fontWeight: '700',
-      marginTop: 5,
-    },
-    content: {
+    container: {
       flex: 1,
       flexDirection: 'column',
       backgroundColor: '#FFFFFF',
@@ -199,6 +213,11 @@ const styles = StyleSheet.create({
       padding: 10,
       margin: 7,
       // minHeight: 400,
+    },
+    title: {
+      fontSize: 16,
+      fontWeight: '700',
+      marginTop: 5,
     },
     actions: {
       flexDirection: 'row',
@@ -233,10 +252,10 @@ const styles = StyleSheet.create({
     }
 });
 
-
-const mapStateToProps = state => {
-  return { ...state };
-};
+const mapStateToProps = state => ({
+  app: state.app,
+  auth: state.auth,
+});
 
 function mapDispatchToProps(dispatch) {
   return {

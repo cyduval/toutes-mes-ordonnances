@@ -1,10 +1,12 @@
 import React from 'react';
 import firebase from 'firebase';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Divider, Button, Header, Text } from 'react-native-elements';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { colors } from 'toutesmesordonnances/constants';
 import { logoutSuccess } from 'app/screens/Auth/actions';
+import { Constants } from 'expo';
 
 class Profile extends React.Component {
     static navigationOptions = {
@@ -29,36 +31,69 @@ class Profile extends React.Component {
     }
 
     render() {
+        const { auth } = this.props;
       return (
-        <View style={styles.container}>
-            <View>
-                <Text>
-                Profile
-                </Text>
+        <View style={styles.root}>
+            <Header
+                leftComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
+                centerComponent={{ text: 'Profile', style: { color: '#fff' } }}
+                statusBarProps={{ barStyle: 'light-content' }}
+                outerContainerStyles={{ width: '100%'  }}
+                innerContainerStyles={{  }}
+                backgroundColor={colors.main}
+            />
+            <View style={styles.container}>
+
+                <Divider style={{ backgroundColor: '#f3f3f3', height: 3, margin: 5 }} />
+                    
+                <View style={{height: 60, marginHorizontal: 20, marginTop: 10, backgroundColor: 'white', borderRadius: 5, alignItems: 'center', flexDirection: 'row'}}>
+                    <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={{fontSize: 15, marginLeft: 10, color: 'gray'}}>
+                            email
+                        </Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginRight: 10 }}>
+                        <Text style={{fontSize: 15, marginLeft: 10, color: 'gray'}}>
+                            {auth.user.email}
+                        </Text>
+                    </View>
+                </View>
+
+
+                <View style={{ margin: 30 }}>
                 <Button
-                    raised
-                    title='Logout'
-                    buttonStyle={{
-                        backgroundColor: colors.main,
-                        borderColor: "transparent",
-                        borderWidth: 0,
-                        borderRadius: 5,
-                        padding: 5,
-                    }}
-                    titleProps={{ fontSize: 30 }}
-                    containerStyle={{ width: '80%' }}
+                    title='Logout' 
+                    buttonStyle={styles.button}
                     onPress={this.logout}
                 />
-            </View>
+                </View>
 
+            </View>
         </View>
       );
     }
   }
 const styles = StyleSheet.create({
-    container: {
+    root: {
         flex: 1,
-        marginTop: 24,
+        backgroundColor: '#f3f3f3',
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginTop: Constants.statusBarHeight,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: '#f3f3f3',
+      // justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100%',
+      width: '100%',
+    },
+    button: {
+        margin: 15,
+        backgroundColor: colors.main,
+        padding: 10,
+        width: '100%',
     },
 
 });

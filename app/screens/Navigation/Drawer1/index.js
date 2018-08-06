@@ -6,15 +6,15 @@ import Home from 'app/screens/Home';
 import Pharmacies from 'app/screens/Pharmacies';
 import Prescriptions from 'app/screens/Prescriptions';
 import Pill from 'app/screens/Pill';
-import Account from 'app/screens/Auth/Account';
+import Profile from 'app/screens/Auth/Profile';
 import Timeout from 'app/screens/Timeout';
 import Onboarding from 'app/components/OnBoarding2';
 import { Icon } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 
 export default createDrawerNavigator({
-    Account: {
-        screen: Account,
+    Profile: {
+        screen: Profile,
         navigationOptions: ({ navigation }) => ({
             drawerLabel: 'Mon compte',
             drawerIcon: () => (

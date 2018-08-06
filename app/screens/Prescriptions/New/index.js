@@ -38,9 +38,14 @@ class New extends React.Component {
 
     send1 = async() => {
       console.log(11);
-      const { auth, prescription } = this.props;
+      const { app, auth, prescription } = this.props;
       if (auth.loginStatus !== 'logged') {
         this.setState({isVisible: true});
+        return;
+      }
+
+      if (app.isNetwork === 'none' || app.isNetwork === 'unknown' || app.isNetwork === 'undefined') {
+        noNetwork();
         return;
       }
 
@@ -356,6 +361,7 @@ class New extends React.Component {
 const mapStateToProps = state => ({
   prescription: state.prescription,
   auth: state.auth,
+  app: state.app,
 });
 
 function mapDispatchToProps(dispatch) {

@@ -2,7 +2,10 @@ import React from 'react';
 import "babel-polyfill";
 import { Provider } from 'react-redux';
 import configureStore from './configureStore';
+import { NetInfo } from 'react-native';
 import App from 'app/screens/App';
+
+import { onStatusChange  } from 'app/screens/App/actions';
 
 import firebase from 'firebase';
 import { firebaseConfig } from 'toutesmesordonnances/config/auth';
@@ -22,6 +25,17 @@ firebase.auth().onAuthStateChanged((user) => {
     console.log(' NOT SIGNED !');
   }
 });
+
+NetInfo.getConnectionInfo().then((connectionInfo) => {
+  store.dispatch(onStatusChange(connectionInfo.type));
+});
+function handleFirstConnectivityChange(connectionInfo) {
+  store.dispatch(onStatusChange(connectionInfo.type));
+}
+NetInfo.addEventListener(
+  'connectionChange',
+  handleFirstConnectivityChange
+);
 
 export default class RootComponent extends React.Component {
   constructor(props) {
