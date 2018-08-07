@@ -1,12 +1,13 @@
 import React from 'react';
 import firebase from 'firebase';
 import { View, StyleSheet } from 'react-native';
-import { Divider, Button, Header, Text } from 'react-native-elements';
+import { Divider, Button, Text } from 'react-native-elements';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { colors } from 'toutesmesordonnances/constants';
 import { logoutSuccess } from 'app/screens/Auth/actions';
 import { Constants } from 'expo';
+import Header from 'app/components/Header';
 
 class Profile extends React.Component {
     static navigationOptions = {
@@ -35,12 +36,9 @@ class Profile extends React.Component {
       return (
         <View style={styles.root}>
             <Header
-                leftComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
-                centerComponent={{ text: 'Profile', style: { color: '#fff' } }}
-                statusBarProps={{ barStyle: 'light-content' }}
-                outerContainerStyles={{ width: '100%'  }}
-                innerContainerStyles={{  }}
-                backgroundColor={colors.main}
+                icon="menu"
+                onPress={() => this.props.navigation.openDrawer()}
+                text="Profile"
             />
             <View style={styles.container}>
 

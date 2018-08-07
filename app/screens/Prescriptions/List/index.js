@@ -3,10 +3,10 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/firestore';
-import { View, StyleSheet, Image } from 'react-native';
-import { Header, ListItem, Text } from 'react-native-elements';
+import { View, StyleSheet } from 'react-native';
+import { ListItem, Text } from 'react-native-elements';
 import { Constants } from 'expo';
-import { colors } from 'toutesmesordonnances/constants';
+import Header from 'app/components/Header';
 
 class List extends React.Component {
   constructor(props) {
@@ -68,21 +68,24 @@ class List extends React.Component {
       const { datas } = this.state;
       if (auth.loginStatus !== 'logged') {
         return (
-          <Text>
-          Vous devez etre loggué pour voir vos ordonnances
-        </Text>
+          <View style={styles.root}>
+            <Header
+                onPress={() => this.props.navigation.goBack()}
+                text="Mes ordonnances"
+            />
+            <View style={styles.container}>
+              <Text style={styles.warning}>
+              Vous devez etre loggué pour voir vos ordonnances
+              </Text>
+            </View>
+          </View>
         );
       }
 
       return (
         <View style={styles.root}>
           <Header
-              leftComponent={{ size: 30, icon: 'keyboard-backspace', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
-              centerComponent={{ text: 'Mes ordonnances', style: { color: '#fff' } }}
-              statusBarProps={{ barStyle: 'light-content' }}
-              outerContainerStyles={{ width: '100%'  }}
-              innerContainerStyles={{  }}
-              backgroundColor={colors.main}
+              onPress={() => this.props.navigation.goBack()}
           />
             <View style={styles.container}>
 
@@ -133,6 +136,12 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     marginBottom: 3,
   },
+  warning: {
+    margin: 5,
+    fontSize: 16,
+    padding: 5,
+    textAlign: 'center',
+  }, 
 });
 
 

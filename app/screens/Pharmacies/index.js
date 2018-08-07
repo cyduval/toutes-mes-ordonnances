@@ -2,9 +2,9 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
-import { Header, ListItem } from 'react-native-elements';
-import { colors } from 'toutesmesordonnances/constants';
+import { ListItem } from 'react-native-elements';
 import { Constants } from 'expo';
+import Header from 'app/components/Header';
 
 class Pharmacies extends React.Component {
 
@@ -12,30 +12,27 @@ class Pharmacies extends React.Component {
       const { prescription } = this.props;
       return (
         <View style={styles.root}>
-            <Header
-                leftComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
-                centerComponent={{ text: 'Mes pharmacies', style: { color: '#fff' } }}
-                statusBarProps={{ barStyle: 'light-content' }}
-                outerContainerStyles={{ width: '100%'  }}
-                innerContainerStyles={{  }}
-                backgroundColor={colors.main}
-            />
+          <Header
+            icon="menu"
+            onPress={() => this.props.navigation.openDrawer()}
+            text="Mes pharmacies"
+          />
 
-            <View style={styles.container}>
- 
-              {prescription.pharmacies.map((marker) => {
-                  
-                  return (<ListItem
-                    key={marker.id}
-                    title={marker.title}
-                    subtitle={marker.description}
-                    leftIcon={{ name: 'home' }}
-                    containerStyle={styles.item}
-                  />
-                  );}
-              )}
- 
-            </View>
+          <View style={styles.container}>
+
+            {prescription.pharmacies.map((marker) => {
+                
+                return (<ListItem
+                  key={marker.id}
+                  title={marker.title}
+                  subtitle={marker.description}
+                  leftIcon={{ name: 'home' }}
+                  containerStyle={styles.item}
+                />
+                );}
+            )}
+
+          </View>
         </View>
       );
     }

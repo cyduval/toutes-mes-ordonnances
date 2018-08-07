@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import { View, StyleSheet, Image } from 'react-native';
-import { Header, Button, Icon, Text, Overlay } from 'react-native-elements';
+import { Button, Icon, Text, Overlay } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 import { sendPrescription, resetPrescription } from 'app/screens/Prescriptions/actions';
 import { Constants } from 'expo';
 // import * as moment from 'moment';
+import Header from 'app/components/Header';
 
 import moment from 'moment';
 // import mail from 'toutesmesordonnances/utils/mail';
@@ -165,12 +166,8 @@ class New extends React.Component {
       return (
         <View style={styles.root}>
           <Header
-              leftComponent={{ size: 30, icon: 'keyboard-backspace', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
-              centerComponent={{ text: 'Mes ordonnances', style: { color: '#fff' } }}
-              statusBarProps={{ barStyle: 'light-content' }}
-              outerContainerStyles={{ width: '100%'  }}
-              innerContainerStyles={{  }}
-              backgroundColor={colors.main}
+            onPress={() => this.props.navigation.goBack()}
+            text="nouvelle ordonnance"
           />
           <View style={styles.container}>
 

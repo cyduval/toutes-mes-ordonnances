@@ -3,12 +3,13 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { View, Text, StyleSheet } from 'react-native';
-import { Header, Button, Input } from 'react-native-elements';
+import { Button, Input } from 'react-native-elements';
 import passwordValidator from 'password-validator';
 import { colors } from 'toutesmesordonnances/constants';
 import { loginSuccess, signupFailure } from 'app/screens/Auth/actions';
 import ErrorMessage from 'app/screens/Auth/ErrorMessage';
 import { Constants } from 'expo';
+import Header from 'app/components/Header';
 
 const schema = new passwordValidator();
 /*
@@ -120,12 +121,8 @@ class Register extends React.Component {
         return (
         <View style={styles.root}>
           <Header
-              leftComponent={{ size: 30, icon: 'keyboard-backspace', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
-              centerComponent={{ text: 'Mes ordonnances', style: { color: '#fff' } }}
-              statusBarProps={{ barStyle: 'light-content' }}
-              outerContainerStyles={{ width: '100%'  }}
-              innerContainerStyles={{  }}
-              backgroundColor={colors.main}
+            onPress={() => this.props.navigation.goBack()}
+            text="S'inscrire"
           />
           <View style={styles.content}>
             <Text style={styles.title}>

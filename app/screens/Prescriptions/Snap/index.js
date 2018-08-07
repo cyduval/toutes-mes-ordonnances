@@ -2,10 +2,11 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Alert, View, StyleSheet } from 'react-native';
-import { Camera, Permissions } from 'expo';
+import { Constants, Camera, Permissions } from 'expo';
 import { Button, Icon, Text } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 import { setPhoto } from 'app/screens/Prescriptions/actions';
+import Header from 'app/components/Header';
 
 class Snap extends React.Component {
 
@@ -56,16 +57,27 @@ class Snap extends React.Component {
 
       if (!granted) {
         return (
-          <View style={styles.container}>
-            <Text>
-            Vous devez autoriser l' appareil photo pour cette application
-            </Text>
+          <View style={styles.root}>
+            <Header
+              onPress={() => this.props.navigation.goBack()}
+              text="Trouver ma pharmacie"
+            />
+            <View style={styles.container}>
+              <Text style={styles.warning}>
+              Vous devez autoriser l' appareil photo pour cette application
+              </Text>
+            </View>
           </View>
         )
       }
 
       return (
-        <View style={styles.container}>
+        <View style={styles.root}>
+          <Header
+            onPress={() => this.props.navigation.goBack()}
+            text="Prendre une photo"
+          />
+          <View style={styles.container}>
             <Camera
                 ref={ref => {
                     this.camera = ref;
@@ -85,19 +97,28 @@ class Snap extends React.Component {
                 onPress={this.takePicture.bind(this)}
                 containerStyle={styles.containerButton}
                 />
-            </View> 
+            </View>
+          </View>
         </View>
       );
     }
   }
 
   const styles = StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: '#f3f3f3',
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      marginTop: Constants.statusBarHeight,
+    },
     container: {
-        flex: 1,
-        backgroundColor: '#f3f3f3',
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        padding: 15,
+      flex: 1,
+      backgroundColor: '#f3f3f3',
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100%',
+      width: '100%',
     },
     containerButton: {
         justifyContent: 'center',
@@ -117,6 +138,12 @@ class Snap extends React.Component {
         width: '100%',
         height: '100%',
       },
+      warning: {
+        margin: 5,
+        fontSize: 16,
+        padding: 5,
+        textAlign: 'center',
+      }, 
   });
 
   

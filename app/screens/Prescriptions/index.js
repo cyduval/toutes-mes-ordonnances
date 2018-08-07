@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Header, Button } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 import { Constants } from 'expo';
+import Header from 'app/components/Header';
 
 export default class Prescriptions extends React.Component {
 
@@ -10,12 +11,9 @@ export default class Prescriptions extends React.Component {
       return (
         <View style={styles.root}>
           <Header
-              leftComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
-              centerComponent={{ text: 'Ordonnances', style: { color: '#fff' } }}
-              statusBarProps={{ barStyle: 'light-content' }}
-              outerContainerStyles={{ width: '100%'  }}
-              innerContainerStyles={{  }}
-              backgroundColor={colors.main}
+            icon="menu"
+            onPress={() => this.props.navigation.openDrawer()}
+            text="mes ordonnances"
           />
 
           <View style={styles.container}>

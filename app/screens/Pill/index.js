@@ -1,22 +1,19 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Header, Text } from 'react-native-elements';
-import { colors } from 'toutesmesordonnances/constants';
+import { Text } from 'react-native-elements';
 import { Constants } from 'expo';
+import Header from 'app/components/Header';
 
 class Pill extends React.Component {
   
     render() {
       return (
         <View style={styles.root}>
-            <Header
-                leftComponent={{ size: 30, icon: 'menu', color: '#fff', onPress: () => this.props.navigation.openDrawer(), }}
-                centerComponent={{ text: 'Mon pilulier', style: { color: '#fff' } }}
-                statusBarProps={{ barStyle: 'light-content' }}
-                outerContainerStyles={{ width: '100%' }}
-                innerContainerStyles={{  }}
-                backgroundColor={colors.main}
-            />
+          <Header
+            icon="menu"
+            onPress={() => this.props.navigation.openDrawer()}
+            text="Mon pilulier"
+          />
 
             <View style={styles.container}>
                 <Text>

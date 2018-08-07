@@ -3,8 +3,8 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { Constants } from 'expo';
-import { Header, Text } from 'react-native-elements';
-import { colors } from 'toutesmesordonnances/constants';
+import { Text } from 'react-native-elements';
+import Header from 'app/components/Header';
 
 class Reset extends React.Component {
     static navigationOptions = {
@@ -14,20 +14,15 @@ class Reset extends React.Component {
     render() {
       return (
         <View style={styles.root}>
-            <Header
-              leftComponent={{ size: 30, icon: 'keyboard-backspace', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
-              centerComponent={{ text: 'Mot de passe oublié', style: { color: '#fff' } }}
-              statusBarProps={{ barStyle: 'light-content' }}
-              outerContainerStyles={{ width: '100%'  }}
-              innerContainerStyles={{  }}
-              backgroundColor={colors.main}
-            />
-            <View style={styles.container}>
-                <Text>
-                    Reset
-                </Text>
-            </View>
-
+          <Header
+            onPress={() => this.props.navigation.goBack()}
+            text="Mot de passe oublié"
+          />
+          <View style={styles.container}>
+              <Text>
+                  Reset
+              </Text>
+          </View>
         </View>
       );
     }

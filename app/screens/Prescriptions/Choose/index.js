@@ -2,12 +2,13 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
-import { Header, Text, Overlay, Button } from 'react-native-elements';
+import { Text, Overlay, Button } from 'react-native-elements';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { colors } from 'toutesmesordonnances/constants';
 import { setPharmacie } from 'app/screens/Prescriptions/actions';
 import distance from 'toutesmesordonnances/utils/lib/distance';
 import round2 from 'toutesmesordonnances/utils/lib/round2';
+import Header from 'app/components/Header';
 
 class Choose extends React.Component {
 
@@ -103,37 +104,40 @@ class Choose extends React.Component {
 
       if (!granted) {
         return (
-          <View style={styles.container}>
-            <Text>
-           Vous devez autoriser l'application à acceder à votre localisation
-            </Text>
+          <View style={styles.root}>
+            <Header
+              onPress={() => this.props.navigation.goBack()}
+              text="Trouver ma pharmacie"
+            />
+            <View style={styles.container}>
+              <Text style={styles.warning}>
+                Vous devez autoriser l'application à acceder à votre localisation
+              </Text>
+            </View>
           </View>
         )
       }
       if (!locationEnabled) {
         return (
-          <View style={styles.container}>
-            <Text>
-            La fonction location doit etre activée pour que l'application fonctionne
-            </Text>
+          <View style={styles.root}>
+            <Header
+              onPress={() => this.props.navigation.goBack()}
+              text="Trouver ma pharmacie"
+            />
+            <View style={styles.container}>
+              <Text style={styles.warning}>
+                La fonction location doit etre activée pour que l'application fonctionne
+              </Text>
+            </View>
           </View>
         )
       }
 
-      
-
-
-
-      console.log(this.state);
       return (
         <View style={styles.root}>
           <Header
-              leftComponent={{ size: 30, icon: 'keyboard-backspace', type: 'MaterialCommunityIcons', color: '#fff', onPress: () => this.props.navigation.goBack(), }}
-              centerComponent={{ text: 'Pharmacies', style: { color: '#FFFFFF' } }}
-              statusBarProps={{ barStyle: 'light-content' }}
-              outerContainerStyles={{ width: '100%' }}
-              innerContainerStyles={{  }}
-              backgroundColor={colors.main}
+            onPress={() => this.props.navigation.goBack()}
+            text="Trouver ma pharmacie"
           />
           <View style={styles.container}>
             <MapView
@@ -208,7 +212,6 @@ class Choose extends React.Component {
       alignItems: 'center', 
       height: '100%',
       width: '100%',
-
     },
     chooseActions: {
       flex: 1,
@@ -229,6 +232,12 @@ class Choose extends React.Component {
       backgroundColor: colors.main,
       padding: 5,
     },  
+    warning: {
+      margin: 5,
+      fontSize: 16,
+      padding: 5,
+      textAlign: 'center',
+    }, 
   });
 
 
