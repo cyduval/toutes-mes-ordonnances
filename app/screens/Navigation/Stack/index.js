@@ -10,6 +10,7 @@ import List from 'app/screens/Prescriptions/List';
 import New from 'app/screens/Prescriptions/New';
 import Choose from 'app/screens/Prescriptions/Choose';
 import Snap from 'app/screens/Prescriptions/Snap';
+import Detail from 'app/screens/Prescriptions/Detail';
 
 import Login from 'app/screens/Auth/Login';
 import Reset from 'app/screens/Auth/Reset';
@@ -44,6 +45,7 @@ const RootStack = createStackNavigator(
         Snap: Snap,
         New: New,
         List: List,
+        Detail: Detail,
 
         Login: Login,
         Reset: Reset,

@@ -8,11 +8,11 @@ import { Button, Icon, Text, Overlay } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 import { sendPrescription, resetPrescription } from 'app/screens/Prescriptions/actions';
 import { Constants } from 'expo';
-// import * as moment from 'moment';
+import uuidGenerator from 'toutesmesordonnances/utils/uuid';
 import Header from 'app/components/Header';
-
 import moment from 'moment';
 // import mail from 'toutesmesordonnances/utils/mail';
+
 
 class New extends React.Component {
 
@@ -55,7 +55,8 @@ class New extends React.Component {
         base64: prescription.photo.base64,
         pharmacie: prescription.pharmacie.title,
         date: moment().format('YYYY-MM-DD HH:mm:ss'),
-        user: this.props.auth.user.uid
+        user: this.props.auth.user.uid,
+        uuid: uuidGenerator()
       });
 
       this.props.onResetPrescription();

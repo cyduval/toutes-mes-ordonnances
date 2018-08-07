@@ -47,7 +47,7 @@ class List extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const datas = [];
     querySnapshot.forEach((doc) => {
-      const { uri, date, base64, pharmacie } = doc.data();
+      const { uri, date, base64, pharmacie, uuid } = doc.data();
       datas.push({
         key: doc.id, // Document ID
         doc, // DocumentSnapshot
@@ -55,6 +55,7 @@ class List extends React.Component {
         pharmacie,
         date,
         base64,
+        uuid,
       });
     });
     this.setState({
@@ -97,8 +98,8 @@ class List extends React.Component {
                     leftAvatar={{ source: { uri: data.uri } }}
                     title={data.date}
                     subtitle={data.pharmacie}
-                    // leftIcon={{ name: 'home' }}
                     containerStyle={styles.item}
+                    onPress={() => this.props.navigation.navigate('Detail',{ prescriptionUid: data.key })}
                   />
                 )
               })
