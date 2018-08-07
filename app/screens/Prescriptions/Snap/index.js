@@ -14,6 +14,7 @@ class Snap extends React.Component {
     super(props);
     this.state = {
       granted: false,
+      isLoading: false,
     };
     
     this.takePicture = this.takePicture.bind(this);
@@ -43,17 +44,27 @@ class Snap extends React.Component {
   };
 
   takePicture = async function() {
-      if (this.camera) {
-        const options = { quality: 0.5, base64: true };
-        const data = await this.camera.takePictureAsync(options);
 
-        this.props.onTakePicture(data);
-        this.props.navigation.navigate('New');
-      }
+      this.setState({ isLoading: true });
+
+      setTimeout(async() => {
+        if (this.camera) {
+          const options = { quality: 0.5, base64: true };
+          const data = await this.camera.takePictureAsync(options);
+  
+          this.props.onTakePicture(data);
+          //this.setState({ isLoading: false });
+          this.props.navigation.navigate('New');
+        }
+      }, 1000);
+
+
+
+
     };
 
     render() {
-      const { granted } = this.state;
+      const { granted, isLoading } = this.state;
 
       if (!granted) {
         return (
@@ -90,12 +101,14 @@ class Snap extends React.Component {
             /> 
             <View style={styles.element}>
                 <Button
-                icon={<Icon name='camera' color='#ffffff' />}
-                fontFamily='Lato'
-                buttonStyle={styles.button}
-                title='Ajouter une photo' 
-                onPress={this.takePicture.bind(this)}
-                containerStyle={styles.containerButton}
+                  icon={<Icon name='camera' color='#ffffff' />}
+                  fontFamily='Lato'
+                  buttonStyle={styles.button}
+                  title='Ajouter une photo' 
+                  onPress={this.takePicture.bind(this)}
+                  containerStyle={styles.containerButton}
+                  loading={isLoading}
+                  disabled={isLoading}
                 />
             </View>
           </View>

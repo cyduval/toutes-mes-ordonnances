@@ -20,12 +20,22 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     console.log(' SIGNED !');
     console.log(user);
+    user.sendEmailVerification(); 
     store.dispatch(loginSuccess({user}));
   } else {
     console.log(' NOT SIGNED !');
   }
 });
-
+/*
+firebase.auth().onAuthStateChanged(function(user) { 
+  if (user.emailVerified) {
+    console.log('Email is verified');
+  }
+  else {
+    console.log('Email is not verified');
+  }
+});
+*/
 NetInfo.getConnectionInfo().then((connectionInfo) => {
   store.dispatch(onStatusChange(connectionInfo.type));
 });

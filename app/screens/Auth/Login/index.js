@@ -38,16 +38,12 @@ class Login extends React.Component {
     this.login = this.login.bind(this);
   }
 
-  static navigationOptions = {
-    title: 'Login',
-  };
 
   componentWillMount() {
     if (this.props.auth.loginStatus === 'logged') {
       this.props.navigation.navigate('Profile');
     }   
   }
-
 
   validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -132,7 +128,7 @@ class Login extends React.Component {
               placeholder='email'
               onSubmitEditing={() => this.passwordInput.focus()}
               onChangeText={email => this.setState({ email })}
-              errorMessage={isEmailValid ? null : 'mot de passe invalide'}
+              errorMessage={isEmailValid ? null : 'email invalide'}
               value={email}
               keyboardAppearance='light'
               autoFocus={false}

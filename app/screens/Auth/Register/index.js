@@ -24,9 +24,7 @@ schema
 */
 
 class Register extends React.Component {
-    static navigationOptions = {
-        title: 'Register',
-    };
+
     constructor(props) {
         super(props);
     
@@ -82,8 +80,6 @@ class Register extends React.Component {
     
         firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((user) => {
-          console.log(777);
-          console.log(user);
           this.setState({
             isLoading: false,
             isEmailValid: true,
@@ -91,8 +87,6 @@ class Register extends React.Component {
             isConfirmationValid: true,
           });
           this.props.onLoginUserSuccess(user);
-          // this.props.navigation.goBack();
-          console.log(888);
           this.props.navigation.navigate('Home');
         })
         .catch((error) => {
@@ -181,6 +175,8 @@ class Register extends React.Component {
               title='Je crée mon compte' 
               buttonStyle={styles.button}
               onPress={this.register}
+              loading={isLoading}
+              disabled={isLoading}
             />
           </View>
         <ErrorMessage />
