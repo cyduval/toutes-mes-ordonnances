@@ -80,6 +80,7 @@ class Register extends React.Component {
     
         firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((user) => {
+          user.sendEmailVerification(); 
           this.setState({
             isLoading: false,
             isEmailValid: true,

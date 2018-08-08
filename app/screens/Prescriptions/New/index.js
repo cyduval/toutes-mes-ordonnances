@@ -11,6 +11,7 @@ import { Constants } from 'expo';
 import uuidGenerator from 'toutesmesordonnances/utils/uuid';
 import Header from 'app/components/Header';
 import moment from 'moment';
+
 // import mail from 'toutesmesordonnances/utils/mail';
 
 
@@ -50,6 +51,7 @@ class New extends React.Component {
         return;
       }
 
+      const uuid = uuidGenerator();
       this.ref.add({
         uri: prescription.photo.uri,
         base64: prescription.photo.base64,
@@ -57,6 +59,31 @@ class New extends React.Component {
         date: moment().format('YYYY-MM-DD HH:mm:ss'),
         user: this.props.auth.user.uid,
         uuid: uuidGenerator()
+      });
+
+
+
+
+
+      const storageRef = firebase.storage().ref();
+      const imagesRef = storageRef.child('images');
+      const fileName = `${uuid}.jpg`;
+      const spaceRef = imagesRef.child(fileName);
+
+
+      const resp = await fetch(prescription.photo.uri);
+      const blob = await resp.blob();
+
+      //https://github.com/expo/firebase-storage-upload-example/blob/master/App.js
+
+      spaceRef.put(blob).then((image) => {
+        console.log(1111111);
+        console.log(image);
+        console.log('Uploaded a blob or file!');
+      })
+      .catch((error) => {
+        console.log(22222222);
+        console.log(error);
       });
 
       this.props.onResetPrescription();
@@ -79,7 +106,6 @@ class New extends React.Component {
       if (response.status !== 200) {
         throw new Error(`Got back HTTP status ${response.status}`);
       }
-      console.log(22);
       this.props.navigation.navigate('List');
   
       // alert(11);
@@ -105,7 +131,7 @@ class New extends React.Component {
       */
     };
 
-
+    /*
     send = async() => {
       
       const { auth, prescription } = this.props;
@@ -145,7 +171,6 @@ class New extends React.Component {
       }
 
       console.log(9999);
-      /*
       fetch('https://www.toutemapharmacie.com/public/scan/new2.php')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -154,12 +179,13 @@ class New extends React.Component {
       .catch((error) => {
         console.error(error);
       });
-      */
+
     
 
       // this.props.onSend({ ordonnance: prescription.photo, pharmacie: prescription.pharmacie.title, user: auth.user });
       this.props.navigation.navigate('Home');
     };
+    */
 
     render() {
       const { prescription } = this.props; 

@@ -26,7 +26,7 @@
     },
     "android": {
       "package": "com.toutesmesordonnances.app",
-      "versionCode": 10015,
+      "versionCode": 10016,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyD7Ixkk0dO_EsmetE6u1LzZ630kttPjODc"

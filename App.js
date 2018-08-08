@@ -20,7 +20,7 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     console.log(' SIGNED !');
     console.log(user);
-    user.sendEmailVerification(); 
+    // user.sendEmailVerification(); 
     store.dispatch(loginSuccess({user}));
   } else {
     console.log(' NOT SIGNED !');

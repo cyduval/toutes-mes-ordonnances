@@ -88,7 +88,7 @@ class Detail extends React.Component {
         }
 
         const {height, width} = Dimensions.get('window');
-        const imageHeight = height - 1&0;
+        const imageHeight = height - 115;
         console.log(height);
 
       return (
@@ -105,12 +105,6 @@ class Detail extends React.Component {
                 source={{uri: data.uri}}
             />
 
-            <Button
-                icon={<Icon name='code' color='#ffffff' />}
-                backgroundColor='#03A9F4'
-                fontFamily='Lato'
-                buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-                title='VIEW NOW' />
             </View>   
         </View>
       );

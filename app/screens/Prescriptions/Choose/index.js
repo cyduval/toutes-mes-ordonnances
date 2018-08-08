@@ -9,6 +9,7 @@ import { setPharmacie } from 'app/screens/Prescriptions/actions';
 import distance from 'toutesmesordonnances/utils/lib/distance';
 import round2 from 'toutesmesordonnances/utils/lib/round2';
 import Header from 'app/components/Header';
+import Loading from 'app/components/Loading';
 
 class Choose extends React.Component {
 
@@ -16,14 +17,15 @@ class Choose extends React.Component {
     super(props);
 
     this.state = {
-      granted: false,
-      locationEnabled: true,
+      granted: 'initial',
+      locationEnabled: 'initial',
       selected: false,
       errorMessage: null,
       mapRegion: null,
       location: null,
       isVisible: false,
       distance: 0,
+      loading: true,
     };
 
     this.onPress = this.onPress.bind(this);
@@ -37,6 +39,7 @@ class Choose extends React.Component {
     askPermissionsAsync = async () => {
       const r = await Permissions.askAsync(Permissions.LOCATION);
       if (r.status !== 'granted') {
+        this.setState({ granted: 'no', loading: false });
         Alert.alert(
           'La fonction location doit etre activée pour que l\'application fonctionne',
           '',
@@ -47,7 +50,18 @@ class Choose extends React.Component {
         );
       } else {
         await this._getLocationAsync();
-        this.setState({ granted: true });
+        this.setState({ granted: 'yes' });
+      }
+    };
+
+    _getLocationAsync = async () => {
+      try {
+        let location = await Location.getCurrentPositionAsync({});
+        const mapRegion = { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 };
+        this.setState({ location: location, mapRegion: mapRegion, locationEnabled: 'yes', loading: false });
+      } catch (error) {
+        console.log(error);
+        this.setState({ locationEnabled: 'no', loading: false });
       }
     };
 
@@ -70,17 +84,6 @@ class Choose extends React.Component {
         }
     };
 
-    _getLocationAsync = async () => {
-      try {
-        let location = await Location.getCurrentPositionAsync({});
-        const mapRegion = { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 };
-        this.setState({ location: location, mapRegion: mapRegion });
-      } catch (error) {
-        console.log(error);
-        this.setState({ locationEnabled: false });
-      }
-    };
-
     onPress = function(event, pharmacieId) {
       console.log(2345);
       console.log(event);
@@ -100,9 +103,23 @@ class Choose extends React.Component {
     
     render() {
       const { prescription } = this.props;
-      const { granted, locationEnabled } = this.state;
+      const { granted, loading, locationEnabled } = this.state;
 
-      if (!granted) {
+      if (loading) {
+        return (
+            <View style={styles.root}>
+              <Header
+                  onPress={() => this.props.navigation.goBack()}
+                  text="Trouver ma pharmacie"
+              />
+              <View style={styles.container}>
+                <Loading />
+              </View>
+            </View>
+          );           
+      }
+
+      if (granted === 'no') {
         return (
           <View style={styles.root}>
             <Header
@@ -117,7 +134,7 @@ class Choose extends React.Component {
           </View>
         )
       }
-      if (!locationEnabled) {
+      if (locationEnabled === 'no') {
         return (
           <View style={styles.root}>
             <Header

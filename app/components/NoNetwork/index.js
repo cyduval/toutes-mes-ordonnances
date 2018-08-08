@@ -13,7 +13,8 @@ export default class NoNetwork extends React.Component  {
   render() {
     return (
       <Overlay isVisible>
-        <Text>This app need internet connection</Text>
+        <Text h5>Pas de connection internet</Text>
+        <Text h6>Impossible de e connecter au réseau. Merci de bien vouloir réessayer.</Text>
       </Overlay>
     );
   }

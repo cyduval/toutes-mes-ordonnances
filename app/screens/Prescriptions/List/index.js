@@ -3,10 +3,11 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/firestore';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { Constants } from 'expo';
 import Header from 'app/components/Header';
+import Loading from 'app/components/Loading';
 
 class List extends React.Component {
   constructor(props) {
@@ -66,7 +67,7 @@ class List extends React.Component {
 
     render() {
       const { auth } = this.props;
-      const { datas } = this.state;
+      const { datas, loading } = this.state;
       if (auth.loginStatus !== 'logged') {
         return (
           <View style={styles.root}>
@@ -83,30 +84,45 @@ class List extends React.Component {
         );
       }
 
+      if (loading) {
+        return (
+            <View style={styles.root}>
+              <Header
+                  onPress={() => this.props.navigation.goBack()}
+                  text="Mes ordonnances"
+              />
+              <View style={styles.container}>
+                <Loading />
+              </View>
+            </View>
+          );           
+      }
+
       return (
         <View style={styles.root}>
           <Header
               onPress={() => this.props.navigation.goBack()}
+              text="Mes ordonnances"
           />
             <View style={styles.container}>
+              <ScrollView style={styles.scrollView}>
+                {
+                  datas.map((data) => {
+                    return (
+                      <ListItem
+                        key={data.date}
+                        leftAvatar={{ source: { uri: data.uri } }}
+                        title={data.date}
+                        subtitle={data.pharmacie}
+                        containerStyle={styles.item}
+                        onPress={() => this.props.navigation.navigate('Detail',{ prescriptionUid: data.key })}
+                      />
+                    )
+                  })
+                }
 
-            {
-              datas.map((data) => {
-                return (
-                  <ListItem
-                    key={data.date}
-                    leftAvatar={{ source: { uri: data.uri } }}
-                    title={data.date}
-                    subtitle={data.pharmacie}
-                    containerStyle={styles.item}
-                    onPress={() => this.props.navigation.navigate('Detail',{ prescriptionUid: data.key })}
-                  />
-                )
-              })
-            }
 
-
-
+              </ScrollView>
             </View>
         </View>
       );
@@ -127,6 +143,10 @@ const styles = StyleSheet.create({
     // justifyContent: 'center', 
     alignItems: 'center', 
     height: '100%',
+    width: '100%',
+  },
+  scrollView: {
+    flex: 1,
     width: '100%',
   },
   item: {
