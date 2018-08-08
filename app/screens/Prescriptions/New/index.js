@@ -52,18 +52,6 @@ class New extends React.Component {
       }
 
       const uuid = uuidGenerator();
-      this.ref.add({
-        uri: prescription.photo.uri,
-        base64: prescription.photo.base64,
-        pharmacie: prescription.pharmacie.title,
-        date: moment().format('YYYY-MM-DD HH:mm:ss'),
-        user: this.props.auth.user.uid,
-        uuid: uuidGenerator()
-      });
-
-
-
-
 
       const storageRef = firebase.storage().ref();
       const imagesRef = storageRef.child('images');
@@ -77,12 +65,27 @@ class New extends React.Component {
       //https://github.com/expo/firebase-storage-upload-example/blob/master/App.js
 
       spaceRef.put(blob).then((image) => {
-        console.log(1111111);
-        console.log(image);
-        console.log('Uploaded a blob or file!');
+        // console.log(1111111);
+        // console.log(image);
+        // console.log('Uploaded a blob or file!');
+
+        spaceRef.getDownloadURL().then((downloadURL) => {
+          // console.log(222222);
+          // console.log('File available at', downloadURL);
+          this.ref.add({
+            // uri: prescription.photo.uri,
+            // base64: prescription.photo.base64,
+            image: downloadURL,
+            pharmacie: prescription.pharmacie.title,
+            date: moment().format('YYYY-MM-DD HH:mm:ss'),
+            user: this.props.auth.user.uid,
+            uuid: uuid
+          });
+        });
+
       })
       .catch((error) => {
-        console.log(22222222);
+        // console.log(22222222);
         console.log(error);
       });
 

@@ -87,7 +87,7 @@ class Detail extends React.Component {
               );           
         }
 
-        const {height, width} = Dimensions.get('window');
+        const { height } = Dimensions.get('window');
         const imageHeight = height - 115;
         console.log(height);
 
@@ -102,7 +102,7 @@ class Detail extends React.Component {
             <Text h5>{data.date}</Text>
             <Image
                 style={{height: imageHeight, width: this.getWidth(imageHeight)}}
-                source={{uri: data.uri}}
+                source={{uri: data.image}}
             />
 
             </View>   

@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/firestore';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { FlatList, View, StyleSheet, ScrollView } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { Constants } from 'expo';
 import Header from 'app/components/Header';
@@ -48,14 +48,13 @@ class List extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const datas = [];
     querySnapshot.forEach((doc) => {
-      const { uri, date, base64, pharmacie, uuid } = doc.data();
+      const { image, date, pharmacie, uuid } = doc.data();
       datas.push({
         key: doc.id, // Document ID
         doc, // DocumentSnapshot
-        uri,
         pharmacie,
         date,
-        base64,
+        image,
         uuid,
       });
     });
@@ -106,21 +105,19 @@ class List extends React.Component {
           />
             <View style={styles.container}>
               <ScrollView style={styles.scrollView}>
-                {
-                  datas.map((data) => {
-                    return (
-                      <ListItem
-                        key={data.date}
-                        leftAvatar={{ source: { uri: data.uri } }}
-                        title={data.date}
-                        subtitle={data.pharmacie}
-                        containerStyle={styles.item}
-                        onPress={() => this.props.navigation.navigate('Detail',{ prescriptionUid: data.key })}
-                      />
-                    )
-                  })
-                }
-
+              <FlatList
+                data={this.state.datas}
+                renderItem={({item}) => (
+                    <ListItem
+                    key={item.key}
+                    // leftAvatar={{ source: { uri: item.image } }}
+                    title={item.date}
+                    subtitle={item.pharmacie}
+                    containerStyle={styles.item}
+                    onPress={() => this.props.navigation.navigate('Detail',{ prescriptionUid: item.key })}
+                  />
+                )}
+              />
 
               </ScrollView>
             </View>
