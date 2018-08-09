@@ -17,6 +17,9 @@ import Reset from 'app/screens/Auth/Reset';
 import Register from 'app/screens/Auth/Register';
 import Profile from 'app/screens/Auth/Profile';
 
+import ListAlert from 'app/screens/Pill/ListAlert';
+import NewAlert from 'app/screens/Pill/NewAlert';
+
 const RootStack = createStackNavigator(
     {
         Drawer: Drawer,
@@ -30,6 +33,9 @@ const RootStack = createStackNavigator(
         Reset: Reset,
         Register: Register,
         Profile: Profile,
+
+        ListAlert: ListAlert,
+        NewAlert: NewAlert,
     },
     {
       initialRouteName: 'Drawer',
@@ -51,6 +57,9 @@ const RootStack = createStackNavigator(
         Reset: Reset,
         Register: Register,
         Profile: Profile,
+
+        ListAlert: ListAlert,
+        NewAlert: NewAlert,
 
     },
     {
