@@ -51,6 +51,8 @@ class New extends React.Component {
         return;
       }
 
+      const user = firebase.auth().currentUser;
+
       const uuid = uuidGenerator();
 
       const storageRef = firebase.storage().ref();
@@ -79,7 +81,8 @@ class New extends React.Component {
             pharmacie: prescription.pharmacie.title,
             date: moment().format('YYYY-MM-DD HH:mm:ss'),
             user: this.props.auth.user.uid,
-            uuid: uuid
+            uuid: uuid,
+            userUid: user.uid
           });
         });
 

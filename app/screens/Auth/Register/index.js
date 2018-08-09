@@ -10,6 +10,7 @@ import { loginSuccess, signupFailure } from 'app/screens/Auth/actions';
 import ErrorMessage from 'app/screens/Auth/ErrorMessage';
 import { Constants } from 'expo';
 import Header from 'app/components/Header';
+import moment from 'moment';
 
 const schema = new passwordValidator();
 /*
@@ -46,12 +47,33 @@ class Register extends React.Component {
         return re.test(email);
     }
 
+    addUser() {
+      const user = firebase.auth().currentUser;
+      const firestore = firebase.firestore();
+      const settings = {
+        timestampsInSnapshots: true
+      };
+      firestore.settings(settings);
+      const ref = firestore.collection('users');
+      ref.add({
+        email: user.email,
+        uid: user.uid,
+        date: moment().format('YYYY-MM-DD HH:mm:ss'),
+      });
+    }
+
+    sendEmailVerification() {
+      const user = firebase.auth().currentUser;
+      user.sendEmailVerification().then(() => {
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
+
     register() {
         const {
           email,
           password,
-          isPasswordValid,
-          isConfirmationValid,
           passwordConfirmation,
         } = this.state;
         const { app } = this.props;
@@ -80,14 +102,15 @@ class Register extends React.Component {
     
         firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((user) => {
-          user.sendEmailVerification(); 
+          this.sendEmailVerification(); 
+          this.addUser();
+          this.props.onLoginUserSuccess(user);
           this.setState({
             isLoading: false,
             isEmailValid: true,
             isPasswordValid: true,
             isConfirmationValid: true,
           });
-          this.props.onLoginUserSuccess(user);
           this.props.navigation.navigate('Home');
         })
         .catch((error) => {
