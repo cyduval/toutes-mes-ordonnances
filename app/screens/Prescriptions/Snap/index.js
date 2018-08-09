@@ -49,7 +49,7 @@ class Snap extends React.Component {
 
       setTimeout(async() => {
         if (this.camera) {
-          const options = { quality: 0.7, base64: true };
+          const options = { quality: 0.8, base64: true };
           const data = await this.camera.takePictureAsync(options);
   
           this.props.onTakePicture(data);

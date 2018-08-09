@@ -110,6 +110,8 @@ class List extends React.Component {
                 renderItem={({item}) => (
                     <ListItem
                     key={item.key}
+                    av-timer
+                    leftIcon={{ name: "file-o", type: "font-awesome" }}
                     // leftAvatar={{ source: { uri: item.image } }}
                     title={item.date}
                     subtitle={item.pharmacie}

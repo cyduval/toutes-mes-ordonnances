@@ -10,7 +10,6 @@ import {
   AsyncStorage
 } from 'react-native';
 import Onboarding from 'app/components/OnBoarding';
-import Onboarding2 from 'app/components/OnBoarding2';
 import Stack from 'app/screens/Navigation/Stack';
 
 class AppScreen extends React.Component {
@@ -60,7 +59,7 @@ class AppScreen extends React.Component {
     }
 
     if (this.state.status === 'notOnBoarded') {
-      return ( <Onboarding2 onboardingFinish={this.onboardingFinish} /> );
+      return ( <Onboarding onboardingFinish={this.onboardingFinish} /> );
     }
     
     return ( <Stack /> );

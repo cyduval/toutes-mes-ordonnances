@@ -8,7 +8,7 @@ import Prescriptions from 'app/screens/Prescriptions';
 import Pill from 'app/screens/Pill';
 import Profile from 'app/screens/Auth/Profile';
 import Timeout from 'app/screens/Timeout';
-import Onboarding from 'app/components/OnBoarding2';
+import Onboarding from 'app/components/OnBoarding';
 import { Icon } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 
