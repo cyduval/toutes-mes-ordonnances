@@ -1,24 +1,41 @@
 import React from 'react';
-import firebase from 'firebase';
 import "babel-polyfill";
 import { Provider } from 'react-redux';
-import { NetInfo } from 'react-native';
-// import { PersistGate } from 'redux-persist/integration/react'
 import configureStore from './configureStore';
-import { onStatusChange  } from './screens/App/actions';
-import { loginSuccess  } from './screens/Auth/Login/actions';
+import { NetInfo } from 'react-native';
+import App from 'app/screens/App';
 
-import ConnectedAppScreen from './screens/App';
-import { firebaseConfig } from './config/auth';
+import { onStatusChange  } from 'app/screens/App/actions';
 
-// import '../lib/global.js';
+import firebase from 'firebase';
+import { firebaseConfig } from 'toutesmesordonnances/config/auth';
+import { loginSuccess  } from 'app/screens/Auth/actions';
 
-// import createReducer from './reducers';
-// const store = createStore(createReducer(), {});
 const initialState = {};
-// const { store, persistor } = configureStore(initialState);
 const store  = configureStore(initialState);
 
+firebase.initializeApp(firebaseConfig);
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    console.log(' SIGNED !');
+    console.log(user);
+    // user.sendEmailVerification(); 
+    store.dispatch(loginSuccess({user}));
+  } else {
+    console.log(' NOT SIGNED !');
+  }
+});
+/*
+firebase.auth().onAuthStateChanged(function(user) { 
+  if (user.emailVerified) {
+    console.log('Email is verified');
+  }
+  else {
+    console.log('Email is not verified');
+  }
+});
+*/
 NetInfo.getConnectionInfo().then((connectionInfo) => {
   store.dispatch(onStatusChange(connectionInfo.type));
 });
@@ -30,17 +47,6 @@ NetInfo.addEventListener(
   handleFirstConnectivityChange
 );
 
-firebase.initializeApp(firebaseConfig);
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    console.log(' SIGNED !');
-    console.log(user);
-    store.dispatch(loginSuccess({user}));
-  } else {
-    console.log(' NOT SIGNED !');
-  }
-});
 export default class RootComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -52,18 +58,9 @@ export default class RootComponent extends React.Component {
   render() {
     return (
       <Provider store={store}>
-          <ConnectedAppScreen />
+        <App />
       </Provider>
     );
-    /*
-    return (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ConnectedAppScreen />
-        </PersistGate>
-      </Provider>
-    );
-    */
   }
 }
 

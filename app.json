@@ -8,6 +8,14 @@
     "sdkVersion": "29.0.0",
     "slug": "toutes-mes-ordonnances",
     "version": "1.0.0",
+    "assetBundlePatterns": [
+      "toutesmesordonnances/assets/**",
+      "toutesmesordonnances/assets/images/**",
+      "./assets/**",
+      "./assets/images/**",
+      "assets/**",
+      "assets/images/**"
+    ],
     "splash": {
       "image": "./assets/splash_screen.png",
       "backgroundColor": "#45b471",
@@ -18,7 +26,12 @@
     },
     "android": {
       "package": "com.toutesmesordonnances.app",
-      "versionCode": 10001
+      "versionCode": 10019,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyD7Ixkk0dO_EsmetE6u1LzZ630kttPjODc"
+        }
+      }
     },
     "hooks": {
       "postPublish": [
