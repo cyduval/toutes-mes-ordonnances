@@ -3,6 +3,7 @@ import {
     RESET_PRESCRIPTION,
     SET_PHARMACIE,
     SEND_PRESCRIPTION,
+    RESET_PHOTO,
   } from './constants';
   
   export const setPhoto = (payload) => ({
@@ -20,7 +21,9 @@ import {
     payload,
   });
 
-  
+  export const resetPhoto = () => ({
+    type: RESET_PHOTO,
+  });
   
   export const resetPrescription = () => ({
     type: RESET_PRESCRIPTION,

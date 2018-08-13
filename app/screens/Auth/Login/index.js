@@ -10,6 +10,7 @@ import { loginSuccess, loginFailure } from 'app/screens/Auth/actions';
 import ErrorMessage from 'app/screens/Auth/ErrorMessage';
 import { Constants } from 'expo';
 import noNetwork from 'toutesmesordonnances/utils/noNetwork';
+import isNetwork from 'toutesmesordonnances/utils/isNetwork';
 
 const schema = new passwordValidator();
 /*
@@ -52,7 +53,7 @@ class Login extends React.Component {
 
   login() {
     const { app } = this.props;
-    if (app.isNetwork === 'none' || app.isNetwork === 'unknown' || app.isNetwork === 'undefined') {
+    if (!isNetwork(app.isNetwork)) {
       noNetwork();
       return;
     }

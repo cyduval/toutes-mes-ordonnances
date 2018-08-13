@@ -8,6 +8,7 @@ import { ListItem, Text } from 'react-native-elements';
 import { Constants } from 'expo';
 import Header from 'app/components/Header';
 import Loading from 'app/components/Loading';
+import OverlayLogin from 'app/components/OverlayLogin';
 
 class List extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class List extends React.Component {
 
       const userUid = this.props.auth.user.uid;
       // this.ref = firestore.collection(userUid);
-      this.ref = firestore.collection('prescriptions').where("user", "==", userUid);
+      this.ref = firestore.collection('prescriptions').where("userUid", "==", userUid);
       this.unsubscribe = null;
     }
 
@@ -67,20 +68,9 @@ class List extends React.Component {
     render() {
       const { auth } = this.props;
       const { datas, loading } = this.state;
+
       if (auth.loginStatus !== 'logged') {
-        return (
-          <View style={styles.root}>
-            <Header
-                onPress={() => this.props.navigation.goBack()}
-                text="Mes ordonnances"
-            />
-            <View style={styles.container}>
-              <Text style={styles.warning}>
-              Vous devez etre loggué pour voir vos ordonnances
-              </Text>
-            </View>
-          </View>
-        );
+        return (<OverlayLogin />);
       }
 
       if (loading) {
@@ -100,7 +90,7 @@ class List extends React.Component {
       return (
         <View style={styles.root}>
           <Header
-              onPress={() => this.props.navigation.goBack()}
+              onPress={() => this.props.navigation.navigate('Prescriptions')}
               text="Mes ordonnances"
           />
             <View style={styles.container}>

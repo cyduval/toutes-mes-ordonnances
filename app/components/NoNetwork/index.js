@@ -4,18 +4,37 @@
  */
 
 import React from 'react';
-import {
-  Text,
-} from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Overlay } from 'react-native-elements';
+import { Constants } from 'expo';
 
 export default class NoNetwork extends React.Component  {
   render() {
     return (
-      <Overlay isVisible>
-        <Text h5>Pas de connection internet</Text>
-        <Text h6>Impossible de e connecter au réseau. Merci de bien vouloir réessayer.</Text>
-      </Overlay>
+      <View style={styles.container}>
+        <Overlay isVisible overlayStyle={styles.overlay}>
+          <Text style={styles.text}>Pas de connection internet</Text>
+          <Text style={styles.text}>Impossible de e connecter au réseau. Merci de bien vouloir réessayer.</Text>
+        </Overlay>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#ecf0f1',
+  },
+  overlay: {
+    alignItems: 'center',
+    paddingTop: 50,
+  },
+  text: {
+    textAlign: 'center',
+    margin: 5,
+  }
+});
