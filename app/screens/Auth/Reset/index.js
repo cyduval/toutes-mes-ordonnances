@@ -7,6 +7,8 @@ import { Constants } from 'expo';
 import { Button, Input, Text } from 'react-native-elements';
 import Header from 'app/components/Header';
 import { colors } from 'toutesmesordonnances/constants';
+import noNetwork from 'toutesmesordonnances/utils/noNetwork';
+import isNetwork from 'toutesmesordonnances/utils/isNetwork';
 
 class Reset extends React.Component {
 
@@ -29,7 +31,7 @@ class Reset extends React.Component {
 
     reset() {
       const { app } = this.props;
-      if (app.isNetwork === 'none' || app.isNetwork === 'unknown' || app.isNetwork === 'undefined') {
+      if (!isNetwork(app.isNetwork)) {
         noNetwork();
         return;
       }

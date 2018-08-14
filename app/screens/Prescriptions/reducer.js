@@ -2,6 +2,7 @@ import {
     SET_PHOTO,
     RESET_PRESCRIPTION,
     SET_PHARMACIE,
+    RESET_PHOTO,
   } from './constants';
   
 
@@ -42,6 +43,9 @@ import {
       }
       case RESET_PRESCRIPTION: {
         return initialState;
+      }
+      case RESET_PHOTO: {
+        return { ...state, photo: false };
       }
       default:
         return state;

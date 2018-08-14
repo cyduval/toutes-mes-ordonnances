@@ -1,14 +1,13 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { View, StyleSheet } from 'react-native';
+import { Alert, Dimensions, View, StyleSheet } from 'react-native';
 import { Text, Overlay, Button } from 'react-native-elements';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { colors } from 'toutesmesordonnances/constants';
 import { setPharmacie } from 'app/screens/Prescriptions/actions';
 import distance from 'toutesmesordonnances/utils/lib/distance';
 import round2 from 'toutesmesordonnances/utils/lib/round2';
-import Header from 'app/components/Header';
 import Loading from 'app/components/Loading';
 
 class Choose extends React.Component {
@@ -29,8 +28,8 @@ class Choose extends React.Component {
     };
 
     this.onPress = this.onPress.bind(this);
+    this.onSelect = this.onSelect.bind(this);
   }
-
 
     componentWillMount = async () => {
       await this.askPermissionsAsync();
@@ -66,10 +65,9 @@ class Choose extends React.Component {
     };
 
     _handleMapRegionChange = mapRegion => {
-        console.log(4444);
-        console.log(mapRegion);
+        // console.log(mapRegion);
         this.setState({ mapRegion });
-      };
+    };
 
     _checkLocationStatus = () => {
         if (!this.state.location) {
@@ -84,9 +82,8 @@ class Choose extends React.Component {
         }
     };
 
-    onPress = function(event, pharmacieId) {
-      console.log(2345);
-      console.log(event);
+    onPress (event, pharmacieId) {
+      // console.log(event);
       const { location } = this.state;
       const pharmacie = this.props.prescription.pharmacies.find( p => p.id === pharmacieId);
 
@@ -95,76 +92,75 @@ class Choose extends React.Component {
       this.setState({selected: pharmacie, isVisible: true, distance: dist, mapRegion: mapRegion});
     };
 
-    onSelect = function() {
+    onSelect () {
       const { selected } = this.state;
       this.props.onSelect(selected);
-      this.props.navigation.navigate('New');
     };
+
+    onValidate () {
+      if (!this.props.prescription.pharmacie) {
+        Alert.alert(
+          'Vous devez choisir une pharmacie',
+          '',
+          [
+            {text: 'Ok', onPress: () => console.log(1)},
+          ],
+          { cancelable: false }
+        )
+        return false;
+      }
+      this.props.next();
+    };
+
+    onBack () {
+      this.props.back();
+    };
+    
     
     render() {
       const { prescription } = this.props;
-      const { granted, loading, locationEnabled } = this.state;
+      const { granted, loading, locationEnabled, selected } = this.state;
 
       if (loading) {
         return (
-            <View style={styles.root}>
-              <Header
-                  onPress={() => this.props.navigation.goBack()}
-                  text="Trouver ma pharmacie"
-              />
-              <View style={styles.container}>
-                <Loading />
-              </View>
+            <View style={styles.content}>
+              <Loading />
             </View>
           );           
       }
 
       if (granted === 'no') {
         return (
-          <View style={styles.root}>
-            <Header
-              onPress={() => this.props.navigation.goBack()}
-              text="Trouver ma pharmacie"
-            />
-            <View style={styles.container}>
-              <Text style={styles.warning}>
-                Vous devez autoriser l'application à acceder à votre localisation
-              </Text>
-            </View>
+          <View style={styles.content}>
+            <Text style={styles.warning}>
+              Vous devez autoriser l'application à acceder à votre localisation
+            </Text>
           </View>
         )
       }
       if (locationEnabled === 'no') {
         return (
-          <View style={styles.root}>
-            <Header
-              onPress={() => this.props.navigation.goBack()}
-              text="Trouver ma pharmacie"
-            />
-            <View style={styles.container}>
-              <Text style={styles.warning}>
-                La fonction location doit etre activée pour que l'application fonctionne
-              </Text>
-            </View>
+          <View style={styles.content}>
+            <Text style={styles.warning}>
+              La fonction location doit etre activée pour que l'application fonctionne
+            </Text>
           </View>
         )
       }
 
+      const { height } = Dimensions.get('window');
+      const imageHeight = height - 260;
+
       return (
-        <View style={styles.root}>
-          <Header
-            onPress={() => this.props.navigation.goBack()}
-            text="Trouver ma pharmacie"
-          />
-          <View style={styles.container}>
+          <View style={styles.content}>
             <MapView
-                style={{ alignSelf: 'stretch', height: '100%' }}
+                style={{ alignSelf: 'stretch', height: imageHeight }}
                 ref={MapView => (this.MapView = MapView)}
                 region={this.state.mapRegion}
-                loadingEnabled = {true}
+                loadingEnabled= {true}
                 loadingIndicatorColor="#666666"
                 loadingBackgroundColor="#eeeeee"
-                moveOnMarkerPress = {false}
+                moveOnMarkerPress={false}
                 showsUserLocation={true}
                 showsCompass={true}
                 showsPointsOfInterest = {false}
@@ -172,19 +168,39 @@ class Choose extends React.Component {
                 // onRegionChange={this._handleMapRegionChange}
             >
             {prescription.pharmacies.map((marker) => {
-                
+                const color = selected.id === marker.id ? 'green' : 'red';
                 return (<MapView.Marker
                     key={marker.id}
                     id={marker.id}
                     coordinate={marker.latlng}
                     title={marker.title}
                     description={marker.description}
+                    pinColor={color}
                     onPress={(e) => this.onPress(e.nativeEvent, marker.id)}
                 />);
                 }
             )}
             </MapView>
-            
+
+            <View style={styles.buttons}>
+              <Button
+                fontFamily='Lato'
+                buttonStyle={styles.button}
+                title='Retour' 
+                onPress={this.onBack.bind(this)}
+                containerStyle={styles.containerButton1}
+              />
+              <Button
+                fontFamily='Lato'
+                buttonStyle={styles.button}
+                title='Validez' 
+                onPress={this.onValidate.bind(this)}
+                containerStyle={styles.containerButton1}
+                disabled={!selected}
+                
+              />
+            </View>
+
             <Overlay
               isVisible={this.state.isVisible}
               onBackdropPress={() => this.setState({isVisible: false})}
@@ -209,26 +225,32 @@ class Choose extends React.Component {
               </View>
             </Overlay>
           </View>
-        </View>
       );
     }
   }
 
   const styles = StyleSheet.create({
-    root: {
-        flex: 1,
-        backgroundColor: '#f3f3f3',
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        marginTop: Constants.statusBarHeight,
-    },
-    container: {
+    content: {
       flex: 1,
-      backgroundColor: '#f3f3f3',
       justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100%',
+      alignItems: 'center',
+      
+    },
+    buttons: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+    button: {
+      margin: 12,
+      backgroundColor: colors.main,
+      padding: 7,
       width: '100%',
+    },
+    containerButton1: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 10,
+      width: '45%',
     },
     chooseActions: {
       flex: 1,

@@ -11,6 +11,8 @@ import ErrorMessage from 'app/screens/Auth/ErrorMessage';
 import { Constants } from 'expo';
 import Header from 'app/components/Header';
 import moment from 'moment';
+import noNetwork from 'toutesmesordonnances/utils/noNetwork';
+import isNetwork from 'toutesmesordonnances/utils/isNetwork';
 
 const schema = new passwordValidator();
 /*
@@ -77,7 +79,7 @@ class Register extends React.Component {
           passwordConfirmation,
         } = this.state;
         const { app } = this.props;
-        if (app.isNetwork === 'none' || app.isNetwork === 'unknown' || app.isNetwork === 'undefined') {
+        if (!isNetwork(app.isNetwork)) {
           noNetwork();
           return;
         }

@@ -3,199 +3,141 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/firestore';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Button, Icon, Text, Overlay } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 import { sendPrescription, resetPrescription } from 'app/screens/Prescriptions/actions';
 import { Constants } from 'expo';
-import uuidGenerator from 'toutesmesordonnances/utils/uuid';
 import Header from 'app/components/Header';
-import moment from 'moment';
+
+import { addPrescription } from 'toutesmesordonnances/utils/firebase';
+
+import sendEmail from 'toutesmesordonnances/utils/sendEmail';
+
+import OverlayLogin from 'app/components/OverlayLogin';
+import noNetwork from 'toutesmesordonnances/utils/noNetwork';
+import isNetwork from 'toutesmesordonnances/utils/isNetwork';
+import NoNetwork from 'app/components/NoNetwork';
+
+import Snap from 'app/screens/Prescriptions/Snap';
+import Choose from 'app/screens/Prescriptions/Choose';
+import Form from 'app/screens/Prescriptions/Form';
+import StepIndicator from 'react-native-step-indicator';
 
 // import mail from 'toutesmesordonnances/utils/mail';
+
+const labels = ["Scanner son ordonnance","Choisir sa pharmacie","mes infos"];
+const customStyles = {
+    stepIndicatorSize: 25,
+    currentStepIndicatorSize:30,
+    separatorStrokeWidth: 2,
+    currentStepStrokeWidth: 3,
+    stepStrokeCurrentColor: colors.main,
+    stepStrokeWidth: 3,
+    stepStrokeFinishedColor: colors.main,
+    stepStrokeUnFinishedColor: '#aaaaaa',
+    separatorFinishedColor: colors.main,
+    separatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorFinishedColor: colors.main,
+    stepIndicatorUnFinishedColor: '#ffffff',
+    stepIndicatorCurrentColor: '#ffffff',
+    stepIndicatorLabelFontSize: 13,
+    currentStepIndicatorLabelFontSize: 13,
+    stepIndicatorLabelCurrentColor: colors.main,
+    stepIndicatorLabelFinishedColor: '#ffffff',
+    stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+    labelColor: '#999999',
+    labelSize: 13,
+    currentStepLabelColor: colors.main
+};
 
 
 class New extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isVisible: false,
-    };
-
-    if (this.props.auth && this.props.auth.user) {
-      const firestore = firebase.firestore();
-      const settings = {
-        timestampsInSnapshots: true
-      };
-      firestore.settings(settings);
-
-      const userUid = this.props.auth.user.uid;
-      // this.ref = firestore.collection(userUid);
-      this.ref = firestore.collection('prescriptions');
+    constructor(props) {
+        super(props);
+        this.state = {
+            isVisible: false,
+            currentPosition: 0,
+        };
+        this.onPageChange = this.onPageChange.bind(this);
     }
-  }
 
-
-
-    send1 = async() => {
-      const { app, auth, prescription } = this.props;
-      if (auth.loginStatus !== 'logged') {
-        this.setState({isVisible: true});
-        return;
-      }
-
-      if (app.isNetwork === 'none' || app.isNetwork === 'unknown' || app.isNetwork === 'undefined') {
-        noNetwork();
-        return;
-      }
-
-      const user = firebase.auth().currentUser;
-
-      const uuid = uuidGenerator();
-
-      const storageRef = firebase.storage().ref();
-      const imagesRef = storageRef.child('images');
-      const fileName = `${uuid}.jpg`;
-      const spaceRef = imagesRef.child(fileName);
-
-
-      const resp = await fetch(prescription.photo.uri);
-      const blob = await resp.blob();
-
-      //https://github.com/expo/firebase-storage-upload-example/blob/master/App.js
-
-      spaceRef.put(blob).then((image) => {
-        // console.log(1111111);
-        // console.log(image);
-        // console.log('Uploaded a blob or file!');
-
-        spaceRef.getDownloadURL().then((downloadURL) => {
-          // console.log(222222);
-          // console.log('File available at', downloadURL);
-          this.ref.add({
-            // uri: prescription.photo.uri,
-            // base64: prescription.photo.base64,
-            image: downloadURL,
-            pharmacie: prescription.pharmacie.title,
-            date: moment().format('YYYY-MM-DD HH:mm:ss'),
-            user: this.props.auth.user.uid,
-            uuid: uuid,
-            userUid: user.uid
-          });
-        });
-
-      })
-      .catch((error) => {
-        // console.log(22222222);
-        console.log(error);
-      });
-
-      this.props.onResetPrescription();
-
-
-      const response = await fetch(
-        'https://www.toutemapharmacie.com/public/scan/new2.php', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ordonnance: prescription.photo.base64, 
-            pharmacie: prescription.pharmacie.title, 
-            user: auth.user
-          })
-        }
-      );
-      if (response.status !== 200) {
-        throw new Error(`Got back HTTP status ${response.status}`);
-      }
-      this.props.navigation.navigate('List');
+    componentWillMount() {
+        this.props.onResetPrescription();
+    }
   
-      // alert(11);
+    onSubmitForm = async(datas) => {
+        const { app, auth, prescription } = this.props;
+        if (auth.loginStatus !== 'logged') {
+            this.setState({isVisible: true});
+            return;
+        }
 
-      // const body = await response.json();
-      // alert(body);
-      // alert(JSON.stringify(body));
+        if (!isNetwork(app.isNetwork)) {
+            noNetwork();
+            return;
+        }
+
+        const d = {
+            ...datas, 
+            uri: prescription.photo.uri, 
+            pharmacie: prescription.pharmacie.title
+        };
+
+        const result = await addPrescription(d);
+        console.log(11111);
+        console.log(result);
+
+        const d1 = {
+            ...d, 
+            url: result, 
+        };
+
+        this.props.onResetPrescription();
+
+        await sendEmail(d1);
 
 
-      /*
-      const response = await fetch(
-        'https://www.toutemapharmacie.com/'
-      );
-      console.log(22);
-      if (response.status !== 200) {
-        throw new Error(`Got back HTTP status ${response.status}`);
-      }
-      console.log(33);
-      console.log(response);
-      alert(response.data);
-      // const body = await response.json();
-      // console.log(body);
-      */
+        this.props.navigation.navigate('List');
+  
     };
 
-    /*
-    send = async() => {
-      
-      const { auth, prescription } = this.props;
-      if (auth.loginStatus !== 'logged') {
-        this.setState({isVisible: true});
-        return;
-      }
+    onPageChange(position){
+        console.log('onPageChange');
+        console.log(position);
+        this.setState({currentPosition: position});
+    }
 
-      console.log(4444);
-      console.log(auth);
 
-      this.ref.add({
-        uri: prescription.photo.uri,
-        pharmacie: prescription.pharmacie.title,
-        date: moment().format('YYYY-MM-DD hh:ii:ss'),
-      });
 
-      console.log(8888);
-      try {
-        let response = await fetch('https://www.toutemapharmacie.com/public/scan/new2.php', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ordonnance: prescription.photo.base64, 
-            pharmacie: prescription.pharmacie.title, 
-            user: auth.user
-          }),
-        });
-        let responseJson = await response.json();
-        console.log(responseJson);
-      } catch (error) {
-        console.error('pbpbpb');
-        console.error(error);
-      }
+    renderStep(){
+        const { currentPosition } = this.state; 
+        console.log('renderStep');
+        console.log(currentPosition);
+        switch (currentPosition) {
+          case 1:
+            return <Choose back={() => {this.onPageChange(0); }}  next={() => {this.onPageChange(2); }} />;
+          case 2:
+            return <Form onSubmitForm={(datas) => this.onSubmitForm(datas)} back={() => {this.onPageChange(1); }}  />;
+          default:
+            return <Snap next={() => {this.onPageChange(1); }}  />;
+        }
+    }
 
-      console.log(9999);
-      fetch('https://www.toutemapharmacie.com/public/scan/new2.php')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        return responseJson.movies;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    
-
-      // this.props.onSend({ ordonnance: prescription.photo, pharmacie: prescription.pharmacie.title, user: auth.user });
-      this.props.navigation.navigate('Home');
-    };
-    */
-
+   
     render() {
-      const { prescription } = this.props; 
+      const { auth, app, prescription } = this.props; 
       const isSendEnabled = prescription && prescription.photo && prescription.pharmacie;
+
+      if (auth.loginStatus !== 'logged') {
+        return (<OverlayLogin />);
+      }
+
+      if (!isNetwork(app.isNetwork)) {
+        return <NoNetwork />;
+      }
+
       return (
         <View style={styles.root}>
           <Header
@@ -204,76 +146,20 @@ class New extends React.Component {
           />
           <View style={styles.container}>
 
-            {
-              prescription.photo ?
-              (<View style={styles.element}>
-                <Image
-                  source={{uri: prescription.photo.uri}}
-                  style={styles.picture}
-                />
-                <Button
-                  icon={<Icon name='camera' color='#ffffff' />}
-                  fontFamily='Lato'
-                  buttonStyle={styles.button}
-                  title='Changer la photo' 
-                  onPress={() => this.props.navigation.navigate('Snap')}
-                  containerStyle={styles.containerButton}
-                />
-              </View>)
-              :
-              (<View style={styles.element}>
-                <Button
-                  icon={<Icon name='camera' color='#ffffff' />}
-                  fontFamily='Lato'
-                  buttonStyle={styles.button}
-                  title='Ajouter une photo' 
-                  onPress={() => this.props.navigation.navigate('Snap')}
-                  containerStyle={styles.containerButton}
-                />
-              </View>)
-            }
+            <View style={styles.stepper}>
+              <StepIndicator
+                  stepCount={3}
+                  customStyles={customStyles}
+                  currentPosition={this.state.currentPosition}
+                  labels={labels}
+                  // onPress={this.onPageChange}
+              />
+            </View>
 
-            {
-              prescription.pharmacie ?
-              (<View style={styles.element}>
-                <Text h5 style={{ fontWeight: '700' }}>
-                  { prescription.pharmacie.title }
-                </Text>
-                <Text h5>
-                  { prescription.pharmacie.description }
-                </Text>
-                <Button
-                  icon={<Icon name='add' color='#ffffff' />}
-                  fontFamily='Lato'
-                  buttonStyle={styles.button}
-                  title='Changer sa pharmacie' 
-                  onPress={() => this.props.navigation.navigate('Choose')}
-                  containerStyle={styles.containerButton}
-                />
-              </View>)
-              :
-              (<View style={styles.element}>
-                <Button
-                  icon={<Icon name='add' color='#ffffff' />}
-                  fontFamily='Lato'
-                  buttonStyle={styles.button}
-                  title='Choisir sa pharmacie' 
-                  onPress={() => this.props.navigation.navigate('Choose')}
-                  containerStyle={styles.containerButton}
-                />
-              </View>)
-            }
+            {this.renderStep()}
+
           </View>
 
-          <Button
-            icon={<Icon name='add' color='#ffffff' />}
-            fontFamily='Lato'
-            disabled={!isSendEnabled}
-            buttonStyle={styles.button}
-            title='Envoyer' 
-            onPress={() => this.send1()}
-            containerStyle={[styles.containerButton, {justifyContent: 'flex-end'}]}
-          />
 
             <Overlay
               isVisible={this.state.isVisible}
@@ -314,10 +200,12 @@ class New extends React.Component {
     container: {
       flex: 1,
       backgroundColor: '#f3f3f3',
-      // justifyContent: 'center', 
-      alignItems: 'center', 
+      // alignItems: 'center', 
       height: '100%',
       width: '100%',
+    },
+    stepper: {
+      marginTop: 10,
     },
     containerButton: {
       justifyContent: 'center',
