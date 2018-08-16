@@ -12,6 +12,8 @@ import Onboarding from 'app/components/OnBoarding';
 import { Icon } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 
+import Barcode from 'app/screens/Barcode';
+
 export default createDrawerNavigator({
     Profile: {
         screen: Profile,
@@ -93,6 +95,12 @@ export default createDrawerNavigator({
         screen: Onboarding,
         navigationOptions: ({ navigation }) => ({
             drawerLabel: 'Onboarding'
+        }),
+    },
+    Barcode: {
+        screen: Barcode,
+        navigationOptions: ({ navigation }) => ({
+            drawerLabel: 'Barcode'
         }),
     },
 }, {
