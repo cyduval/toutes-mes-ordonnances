@@ -5,29 +5,31 @@ import {
   View          // Container component
 } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { colors } from 'toutesmesordonnances/constants';
 import Swiper from './Swiper';
+
 
 export default class Onboarding extends Component {
   render() {
     return (
       <Swiper onboardingFinish={this.props.onboardingFinish} >
         {/* First screen */}
-        <View style={[styles.slide, { backgroundColor: '#C04DEE' }]}>
-          <Icon name="camera" type="font-awesome" color="#FFFFFF" size={100} />
-          <Text style={styles.header}>EAT</Text>
-          <Text style={styles.text}>Good nutrition is an important part of leading a healthy lifestyle</Text>
+        <View style={[styles.slide, { backgroundColor: colors.main}]}>
+          <Icon name="file-o" type="font-awesome" color="#FFFFFF" size={100} />
+          <Text style={styles.header}>ORDONNANCES</Text>
+          <Text style={styles.text}>Sanner votre ordonnance et envoyez la à votre pharmacien</Text>
         </View>
         {/* Second screen */}
         <View style={[styles.slide, { backgroundColor: '#4AAFEE' }]}>
-          <Icon name="camera" type="font-awesome" color="#FFFFFF" size={100} />
-          <Text style={styles.header}>PRAY</Text>
-          <Text style={styles.text}>Prayer is one of the most important things a Christian can do</Text>
+          <Icon name="medical-bag" type="material-community" color="#FFFFFF" size={100} />
+          <Text style={styles.header}>MEDICAMENTS</Text>
+          <Text style={styles.text}>Scannez le code barre d'un médicament pour lire la notice</Text>
         </View>
         {/* Third screen */}
         <View style={[styles.slide, { backgroundColor: '#FC515B' }]}>
-          <Icon name="camera" type="font-awesome" color="#FFFFFF" size={100} />
-          <Text style={styles.header}>LOVE</Text>
-          <Text style={styles.text}>Where there is love there is life</Text>
+          <Icon name="pill" type="material-community" color="#FFFFFF" size={100} />
+          <Text style={styles.header}>PILULIER</Text>
+          <Text style={styles.text}>Gérez et organisez la fréquence de vos prises de médicaments</Text>
         </View>
       </Swiper>
     );
