@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation';
 import Drawer from 'app/screens/Navigation/Drawer';
 import Drawer1 from 'app/screens/Navigation/Drawer1';
 
+import Place from 'app/screens/Pharmacies/Place';
 
 import List from 'app/screens/Prescriptions/List';
 import New from 'app/screens/Prescriptions/New';
@@ -29,6 +30,8 @@ const RootStack = createStackNavigator(
         New: New,
         List: List,
 
+        Place: Place,
+
         Login: Login,
         Reset: Reset,
         Register: Register,
@@ -52,6 +55,8 @@ const RootStack = createStackNavigator(
         New: New,
         List: List,
         Detail: Detail,
+
+        Place: Place,
 
         Login: Login,
         Reset: Reset,

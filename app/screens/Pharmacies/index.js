@@ -28,6 +28,7 @@ class Pharmacies extends React.Component {
                   subtitle={marker.description}
                   leftIcon={{ name: 'home' }}
                   containerStyle={styles.item}
+                  onPress={() => this.props.navigation.navigate('Place',{ pharmacieId: marker.id })}
                 />
                 );}
             )}
