@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import { Dimensions, Image, View, StyleSheet } from 'react-native';
-import { Button, Icon, Text } from 'react-native-elements';
+import { ListItem, Text } from 'react-native-elements';
 import { Constants } from 'expo';
 import Header from 'app/components/Header';
 import Loading from 'app/components/Loading';
@@ -57,6 +57,9 @@ class Detail extends React.Component {
         const { auth } = this.props;
         const { loading, data } = this.state;
 
+        console.log(11111);
+        console.log(data);
+
         if (auth.loginStatus !== 'logged') {
           return (
             <View style={styles.root}>
@@ -88,7 +91,7 @@ class Detail extends React.Component {
         }
 
         const { height } = Dimensions.get('window');
-        const imageHeight = height - 115;
+        const imageHeight = height - 170;
         console.log(height);
 
       return (
@@ -98,12 +101,36 @@ class Detail extends React.Component {
                 text="Détail"
             />
             <View style={styles.container}>
-            <Text h5>{data.pharmacie}</Text>
-            <Text h5>{data.date}</Text>
-            <Image
-                style={{height: imageHeight, width: this.getWidth(imageHeight)}}
-                source={{uri: data.image}}
-            />
+
+                {
+                    data.pharmacie ?
+                    (<ListItem
+                        key="1"
+                        title={data.pharmacie || ''}
+                        containerStyle={styles.item}
+                    />) : false
+                }
+                {
+                    data.date ? 
+                    (<ListItem
+                        key="2"
+                        title={data.date || ''}
+                        containerStyle={styles.item}
+                    />) : false
+                }
+                {
+                    data.comment ? 
+                    (<ListItem
+                        key="3"
+                        title={data.comment || ''}
+                        containerStyle={styles.item}
+                    />) : false
+                }
+
+                <Image
+                    style={{height: imageHeight, width: this.getWidth(imageHeight)}}
+                    source={{uri: data.image}}
+                />
 
             </View>   
         </View>
@@ -132,6 +159,15 @@ class Detail extends React.Component {
         padding: 5,
         textAlign: 'center',
     }, 
+    item: {
+        width: '100%', 
+        height: 30,
+        alignItems: 'center', 
+        borderBottomWidth: 1,
+        borderColor: '#F5F5F5',
+        borderStyle: 'solid',
+        marginBottom: 3,
+      },
   });
 
 

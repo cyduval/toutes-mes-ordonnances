@@ -28,7 +28,7 @@ class List extends React.Component {
 
       const userUid = this.props.auth.user.uid;
       // this.ref = firestore.collection(userUid);
-      this.ref = firestore.collection('prescriptions').where("userUid", "==", userUid);
+      this.ref = firestore.collection('prescriptions').where("userUid", "==", userUid).orderBy("date", "desc");
       this.unsubscribe = null;
     }
 
