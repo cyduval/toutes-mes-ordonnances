@@ -1,13 +1,15 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import firebase from 'firebase';
-import 'firebase/firestore';
+import isNetwork from 'toutesmesordonnances/utils/isNetwork';
+import NoNetwork from 'app/components/NoNetwork';
+import * as api from 'toutesmesordonnances/utils/api';
 import { Dimensions, Image, View, StyleSheet } from 'react-native';
-import { ListItem, Text } from 'react-native-elements';
+import { ListItem } from 'react-native-elements';
 import { Constants } from 'expo';
 import Header from 'app/components/Header';
 import Loading from 'app/components/Loading';
+import OverlayLogin from 'app/components/OverlayLogin';
 
 class Detail extends React.Component {
 
@@ -18,35 +20,16 @@ class Detail extends React.Component {
             loading: true,
             data: false,
         };
-
-        if (this.props.auth && this.props.auth.user) {
-            const firestore = firebase.firestore();
-            const settings = {
-                timestampsInSnapshots: true
-            };
-            firestore.settings(settings);
-            const userUid = this.props.auth.user.uid;
-            const prescriptionUid = this.props.navigation.getParam('prescriptionUid');
-            this.ref = firestore.collection("prescriptions").doc(prescriptionUid);
-
-        }
     }
 
-    componentDidMount() {
-        this.ref.get().then((doc) => {
-            if (doc.exists) {
-                console.log("Document data:", doc.data());
-                this.setState({
-                    data: doc.data(),
-                    loading: false,
-                 });
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
+    componentDidMount = async() => {
+        if (this.props.auth && this.props.auth.user) {
+            const result = await api.getDetail(this.props.navigation.getParam('prescriptionUid'));
+            this.setState({
+                data: result,
+                loading: false,
+            });
+        }
     }
 
     getWidth(h) {
@@ -54,40 +37,29 @@ class Detail extends React.Component {
     }
 
     render() {
-        const { auth } = this.props;
+        const { app, auth } = this.props;
         const { loading, data } = this.state;
 
-        console.log(11111);
-        console.log(data);
-
         if (auth.loginStatus !== 'logged') {
-          return (
-            <View style={styles.root}>
-              <Header
-                  onPress={() => this.props.navigation.goBack()}
-                  text=""
-              />
-              <View style={styles.container}>
-                <Text style={styles.warning}>
-                Vous devez etre loggué pour voir le détail de l'ordonnance
-                </Text>
-              </View>
-            </View>
-          );
+            return (<OverlayLogin />);
+        }
+
+        if (!isNetwork(app.isNetwork)) {
+            return <NoNetwork />;
         }
 
         if (loading) {
             return (
                 <View style={styles.root}>
-                  <Header
-                      onPress={() => this.props.navigation.goBack()}
-                      text=""
-                  />
-                  <View style={styles.container}>
+                <Header
+                    onPress={() => this.props.navigation.goBack()}
+                    text="Mes ordonnances"
+                />
+                <View style={styles.container}>
                     <Loading />
-                  </View>
                 </View>
-              );           
+                </View>
+            );           
         }
 
         const { height } = Dimensions.get('window');
@@ -129,7 +101,7 @@ class Detail extends React.Component {
 
                 <Image
                     style={{height: imageHeight, width: this.getWidth(imageHeight)}}
-                    source={{uri: data.image}}
+                    source={{uri: `https://www.toutemapharmacie.com/public/scan/image.php?u=${data.uid}`}}
                 />
 
             </View>   

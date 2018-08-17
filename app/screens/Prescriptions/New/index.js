@@ -1,18 +1,19 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import firebase from 'firebase';
-import 'firebase/firestore';
+// import firebase from 'firebase';
+// import 'firebase/firestore';
 import { View, StyleSheet } from 'react-native';
-import { Button, Icon, Text, Overlay } from 'react-native-elements';
+import { Button, Text, Overlay } from 'react-native-elements';
 import { colors } from 'toutesmesordonnances/constants';
 import { sendPrescription, resetPrescription } from 'app/screens/Prescriptions/actions';
 import { Constants } from 'expo';
 import Header from 'app/components/Header';
 
-import { addPrescription } from 'toutesmesordonnances/utils/firebase';
+// import { addPrescription } from 'toutesmesordonnances/utils/firebase';
+// import sendEmail from 'toutesmesordonnances/utils/sendEmail';
 
-import sendEmail from 'toutesmesordonnances/utils/sendEmail';
+import * as api from 'toutesmesordonnances/utils/api';
 
 import OverlayLogin from 'app/components/OverlayLogin';
 import noNetwork from 'toutesmesordonnances/utils/noNetwork';
@@ -82,22 +83,23 @@ class New extends React.Component {
         const d = {
             ...datas, 
             uri: prescription.photo.uri, 
+            base64: prescription.photo.base64,
             pharmacie: prescription.pharmacie.title
         };
+        const result = await api.addPrescription(d);
+        this.props.onResetPrescription();
 
+        /*
         const result = await addPrescription(d);
         console.log(11111);
         console.log(result);
-
         const d1 = {
             ...d, 
             url: result, 
         };
-
         this.props.onResetPrescription();
-
         await sendEmail(d1);
-
+        */
 
         this.props.navigation.navigate('List');
   

@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import 'firebase/firestore';
 import uuidGenerator from 'toutesmesordonnances/utils/uuid';
 import moment from 'moment';
 import { logError } from 'toutesmesordonnances/utils/logSentry';
@@ -72,7 +73,7 @@ export async function updateUser(datas) {
         return false;
     }
 }
-
+/*
 export async function addPrescription(datas) {
     console.log('addPrescription');
     console.log(datas);
@@ -129,3 +130,4 @@ export async function addPrescription(datas) {
         return false;
       }
 }
+*/
