@@ -27,7 +27,7 @@ import StepIndicator from 'react-native-step-indicator';
 
 // import mail from 'toutesmesordonnances/utils/mail';
 
-const labels = ["Scanner son ordonnance","Choisir sa pharmacie","mes infos"];
+const labels = ["Scannez son ordonnance","Choisir sa pharmacie","mes infos"];
 const customStyles = {
     stepIndicatorSize: 25,
     currentStepIndicatorSize:30,

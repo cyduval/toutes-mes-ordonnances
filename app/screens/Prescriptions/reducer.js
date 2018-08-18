@@ -20,8 +20,8 @@ import {
       id: 2,
     },
     {
-      title: 'pharmacie Adil',
-      description: '2 rue pierre dorlan, 75018 Paris france',
+      title: 'Pharmacie centrale Bana',
+      description: '2 place Pierre Mac Orlan, 75018 Paris france',
       latlng: {latitude: 48.895340, longitude: 2.362561},
       id: 3,
     },
